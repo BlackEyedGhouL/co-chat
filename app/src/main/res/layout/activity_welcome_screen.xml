@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".WelcomeScreen">
+
+    <TextView
+        android:id="@+id/wl_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="5dp"
+        android:fontFamily="@font/inter_bold"
+        android:text="@string/wl_app_name"
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/wl_app_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/wl_app_logo"
+        app:layout_constraintTop_toTopOf="@+id/wl_app_logo" />
+
+    <ImageView
+        android:id="@+id/wl_app_logo"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="50dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/app_logo"
+        app:elevation="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/wl_app_name"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <com.github.captain_miao.optroundcardview.OptRoundCardView
+        android:id="@+id/wl_round_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:optRoundCardBackgroundColor="@color/primary_color"
+        app:optRoundCardCornerRadius="30dp"
+        app:optRoundCardElevation="16dp"
+        app:optRoundCardLeftBottomCorner="false"
+        app:optRoundCardRightBottomCorner="false">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/wl_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="40dp"
+                android:fontFamily="@font/inter_bold"
+                android:text="@string/wl_title"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/wl_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/inter_regular"
+                android:text="@string/wl_subtitle"
+                android:textAlignment="center"
+                android:textColor="@color/secondary_color"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="@+id/wl_title"
+                app:layout_constraintStart_toStartOf="@+id/wl_title"
+                app:layout_constraintTop_toBottomOf="@+id/wl_title" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/wl_phone_number_txt_field"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="270dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:layout_marginBottom="40dp"
+                android:hint="Enter your phone number"
+                android:textColorHint="@color/secondary_color"
+                app:boxCornerRadiusBottomEnd="30dp"
+                app:boxCornerRadiusBottomStart="30dp"
+                app:boxCornerRadiusTopEnd="30dp"
+                app:boxCornerRadiusTopStart="30dp"
+                app:boxStrokeColor="@color/white"
+                app:boxStrokeErrorColor="@color/error_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/wl_next_card"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/wl_subtitle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/wl_phone_number_txt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/wl_next_card"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="7dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="150sp"
+                app:cardElevation="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/wl_phone_number_txt_field"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/wl_phone_number_txt_field"
+                app:layout_constraintTop_toTopOf="@+id/wl_phone_number_txt_field">
+
+                <ImageView
+                    android:id="@+id/wl_next_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/arrow_forward"
+                    tools:ignore="ContentDescription" />
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.github.captain_miao.optroundcardview.OptRoundCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
