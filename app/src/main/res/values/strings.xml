@@ -2,5 +2,6 @@
     <string name="app_name">CoChat</string>
     <string name="wl_app_name">CoChat</string>
     <string name="wl_title">Hello, Lets Chat</string>
-    <string name="wl_subtitle">What are you doing today?\nIs everything okay?</string>
+    <string name="wl_subtitle">Connect with people around\nthe world</string>
+    <string name="wl_phone_number_txt">Enter your phone number</string>
 </resources>
