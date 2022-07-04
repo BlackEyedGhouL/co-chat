@@ -154,6 +154,8 @@
                 app:cardBackgroundColor="@color/secondary_color"
                 app:cardCornerRadius="150sp"
                 app:cardElevation="16dp"
+                android:clickable="false"
+                android:focusable="false"
                 app:layout_constraintBottom_toBottomOf="@+id/wl_phone_number_txt_field"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
