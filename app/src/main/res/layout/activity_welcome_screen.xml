@@ -43,7 +43,7 @@
         android:id="@+id/wl_view_pager"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        app:layout_constraintBottom_toTopOf="@+id/indicator"
+        app:layout_constraintBottom_toTopOf="@+id/wl_indicator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +51,7 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <me.relex.circleindicator.CircleIndicator3
-        android:id="@+id/indicator"
+        android:id="@+id/wl_indicator"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         app:ci_drawable="@drawable/indicator_round"
@@ -64,7 +64,7 @@
     <com.github.captain_miao.optroundcardview.OptRoundCardView
         android:id="@+id/wl_round_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="290dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,19 +76,20 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingTop="40dp"
+            android:paddingBottom="20dp">
 
             <TextView
                 android:id="@+id/wl_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="40dp"
                 android:fontFamily="@font/inter_bold"
                 android:text="@string/wl_title"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="32sp"
+                android:textSize="28sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -98,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/inter_regular"
                 android:text="@string/wl_subtitle"
                 android:textAlignment="center"
@@ -106,15 +107,15 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="@+id/wl_title"
                 app:layout_constraintStart_toStartOf="@+id/wl_title"
-                app:layout_constraintTop_toBottomOf="@+id/wl_title" />
+                app:layout_constraintTop_toBottomOf="@+id/wl_title"
+                tools:ignore="TextContrastCheck" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/wl_phone_number_txt_field"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="270dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginBottom="10dp"
                 android:hint="@string/wl_phone_number_txt"
                 android:textColorHint="@color/secondary_color"
                 app:boxCornerRadiusBottomEnd="30dp"
@@ -123,25 +124,25 @@
                 app:boxCornerRadiusTopStart="30dp"
                 app:boxStrokeColor="@color/white"
                 app:boxStrokeErrorColor="@color/error_color"
-                app:prefixText="+94 "
-                app:prefixTextColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/wl_next_card"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/wl_subtitle">
+                app:layout_constraintTop_toBottomOf="@id/wl_subtitle"
+                app:prefixText="+94 "
+                app:prefixTextColor="@color/white">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/wl_phone_number_txt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/inter_regular"
-                    android:singleLine="true"
                     android:inputType="number"
                     android:maxLength="9"
+                    android:singleLine="true"
                     android:textColor="@color/white"
-                    tools:ignore="TouchTargetSizeCheck" />
+                    tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -170,7 +171,7 @@
                     android:layout_marginStart="2dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/arrow_forward"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription,ImageContrastCheck" />
 
             </androidx.cardview.widget.CardView>
 

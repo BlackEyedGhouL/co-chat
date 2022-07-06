@@ -4,9 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/indicator_round.xml" value="0.1675925925925926" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/otp_box_bg.xml" value="0.1" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/progress_bar.xml" value="0.1" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_home.xml" value="0.1" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_main.xml" value="0.18981481481481483" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_verify_otp.xml" value="0.1" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_welcome_screen.xml" value="0.22037037037037038" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_verify_otp.xml" value="0.20277777777777778" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_welcome_screen.xml" value="0.20136986301369864" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/progress_bar.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/view_pager_image_item.xml" value="0.1" />
       </map>
     </option>
