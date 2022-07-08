@@ -66,7 +66,7 @@ class VerifyOtp : AppCompatActivity() {
         isOnVerificationCompleted = intent.getBooleanExtra("IS_ON_VERIFICATION_COMPLETED", false)
         val phoneNumber = intent.getStringExtra("PHONE_NUMBER")
 
-        subtitle.text = "Enter 6 digit number that sent to $phoneNumber"
+        subtitle.text = "Enter 6 digit number that sent to\n$phoneNumber"
 
         if (isOnVerificationCompleted) {
             credentials = intent.getParcelableExtra("CREDENTIALS")!!
