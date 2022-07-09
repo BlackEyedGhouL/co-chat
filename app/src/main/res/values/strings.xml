@@ -3,8 +3,12 @@
     <string name="wl_app_name">CoChat</string>
     <string name="wl_title">Hello, Lets Chat</string>
     <string name="wl_subtitle">Connect with people all around\nthe world</string>
-    <string name="wl_phone_number_txt">Enter your phone number</string>
+    <string name="wl_phone_number_txt">Your phone number</string>
     <string name="vo_title">Verification</string>
     <string name="vo_resend">Resend</string>
     <string name="vo_resend_text">Didn\'t receive a code?</string>
+    <string name="su_title">What\'s your\nname?</string>
+    <string name="su_proceed">Proceed</string>
+    <string name="su_name_txt">Your full name</string>
+    <string name="sp_title">Pick a profile picture</string>
 </resources>

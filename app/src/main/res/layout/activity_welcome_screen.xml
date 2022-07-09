@@ -140,6 +140,7 @@
                     android:fontFamily="@font/cottorway_medium"
                     android:inputType="number"
                     android:maxLength="9"
+                    android:textSize="17sp"
                     android:singleLine="true"
                     android:textColor="@color/white"
                     tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
