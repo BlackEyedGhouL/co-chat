@@ -1,9 +1,11 @@
 package com.blackeyedghoul.cochat
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import me.relex.circleindicator.CircleIndicator3
 import java.util.concurrent.TimeUnit
 
@@ -127,13 +130,34 @@ class VerifyOtp : AppCompatActivity() {
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    progressDialogActivity.dismissProgressDialog()
-                    startActivity(Intent(this, Home::class.java))
-                    finish()
+                    checkExistingUserOrNot(task.result.user!!.uid)
                 } else {
                     progressDialogActivity.dismissProgressDialog()
                     Toast.makeText(this,"Please check your OTP and try again",Toast.LENGTH_SHORT).show()
                 }
+            }
+    }
+
+    private fun checkExistingUserOrNot(uid: String) {
+        val db = FirebaseFirestore.getInstance()
+        val docRef = db.collection("users").document(uid)
+
+        docRef.get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    Log.d(TAG, "DocumentSnapshot data: ${document.data}")
+                    progressDialogActivity.dismissProgressDialog()
+                    startActivity(Intent(this, Home::class.java))
+                    finish()
+                } else {
+                    Log.d(TAG, "No such document")
+                    progressDialogActivity.dismissProgressDialog()
+                    startActivity(Intent(this, SignUpUserName::class.java))
+                    finish()
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Get failed with ", exception)
             }
     }
 
