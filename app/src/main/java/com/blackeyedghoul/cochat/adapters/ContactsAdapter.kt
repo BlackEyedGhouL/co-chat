@@ -1,15 +1,22 @@
 package com.blackeyedghoul.cochat.adapters
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.blackeyedghoul.cochat.Chat
 import com.blackeyedghoul.cochat.R
+import com.blackeyedghoul.cochat.SignUpProfilePicture
 import com.blackeyedghoul.cochat.models.User
 
-class ContactsAdapter(private val usersList: ArrayList<User>): RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
+class ContactsAdapter(private val usersList: ArrayList<User>, private val context: Context): RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -71,6 +78,24 @@ class ContactsAdapter(private val usersList: ArrayList<User>): RecyclerView.Adap
             "16" -> {
                 holder.profilePicture.setImageResource(R.drawable.pp_16)
             }
+        }
+
+        holder.itemView.setOnClickListener{
+            val gUser = usersList[position]
+            val gUid: String = gUser.uid
+
+            val intent = Intent(context, Chat::class.java)
+            intent.putExtra("UID", gUid)
+            context.startActivity(intent)
+        }
+
+        holder.profilePicture.setOnClickListener{
+            val gUser = usersList[position]
+            val gUid: String = gUser.uid
+
+            val intent = Intent(context, Chat::class.java)
+            intent.putExtra("UID", gUid)
+            context.startActivity(intent)
         }
     }
 

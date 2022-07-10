@@ -67,47 +67,23 @@
         app:layout_constraintTop_toTopOf="@+id/h_edit"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/h_search_txt_field"
+    <SearchView
+        android:id="@+id/h_search_view"
+        android:theme="@style/searchView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        app:boxBackgroundColor="#EEEEEE"
-        app:boxBackgroundMode="filled"
-        app:boxCornerRadiusBottomEnd="30dp"
-        app:boxCornerRadiusBottomStart="30dp"
-        app:boxCornerRadiusTopEnd="30dp"
-        app:boxCornerRadiusTopStart="30dp"
-        app:boxStrokeWidth="0dp"
-        app:boxStrokeWidthFocused="0dp"
-        app:hintAnimationEnabled="false"
-        app:hintEnabled="false"
+        android:animateLayoutChanges="true"
+        android:queryHint="Search"
+        android:iconifiedByDefault="false"
+        android:searchIcon="@drawable/search_small"
+        android:queryBackground="@android:color/transparent"
+        android:background="@drawable/search_view_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/h_app_name"
-        app:startIconDrawable="@drawable/search_small"
-        app:startIconTint="@color/secondary_text">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/h_search_txt"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/cottorway_medium"
-            android:hint="@string/h_search_txt"
-            android:inputType="textAutoComplete"
-            android:paddingVertical="0dp"
-            android:singleLine="true"
-            android:textColor="@color/primary_text"
-            android:textColorHint="@color/secondary_text"
-            android:textSize="17sp"
-            tools:ignore="TouchTargetSizeCheck,TextContrastCheck"
-            tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="144dp" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/h_app_name" />
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
@@ -116,6 +92,6 @@
         android:background="#EEEEEE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/h_search_txt_field" />
+        app:layout_constraintTop_toBottomOf="@+id/h_search_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

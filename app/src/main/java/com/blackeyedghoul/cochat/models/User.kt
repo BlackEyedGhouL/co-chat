@@ -7,5 +7,6 @@ data class User(
     var profilePicture: String = "",
     var phoneNumber: String = "",
     var joinedDate: Timestamp = Timestamp.now(),
-    var bio: String = ""
+    var bio: String = "",
+    var uid: String = ""
 )

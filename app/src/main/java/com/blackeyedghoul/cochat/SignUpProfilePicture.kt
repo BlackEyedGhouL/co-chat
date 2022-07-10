@@ -410,7 +410,8 @@ class SignUpProfilePicture : AppCompatActivity() {
             "profilePicture" to selectedImage,
             "joinedDate" to Timestamp.now(),
             "phoneNumber" to currentUser!!.phoneNumber,
-            "bio" to "Hi \uD83D\uDC4B\uD83C\uDFFC I am using CoChat."
+            "bio" to "Hi \uD83D\uDC4B\uD83C\uDFFC I am using CoChat.",
+            "uid" to currentUser.uid
         )
 
         db.collection("users").document(currentUser.uid)

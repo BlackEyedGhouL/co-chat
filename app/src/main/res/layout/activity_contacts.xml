@@ -49,42 +49,46 @@
             app:layout_constraintTop_toTopOf="@+id/c_back" />
 
         <ImageView
-            android:id="@+id/c_search"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_marginEnd="15dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/search"
-            app:layout_constraintBottom_toBottomOf="@+id/c_header_name"
-            app:layout_constraintEnd_toStartOf="@+id/c_more"
-            app:layout_constraintTop_toTopOf="@+id/c_header_name"
-            tools:ignore="ContentDescription" />
-
-        <ImageView
             android:id="@+id/c_more"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="fitXY"
             android:src="@drawable/more"
-            app:layout_constraintBottom_toBottomOf="@+id/c_search"
+            app:layout_constraintBottom_toBottomOf="@+id/c_header_name"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/c_search"
+            app:layout_constraintTop_toTopOf="@+id/c_header_name"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <SearchView
+        android:id="@+id/c_search_view"
+        android:theme="@style/searchView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:animateLayoutChanges="true"
+        android:queryHint="Search"
+        android:iconifiedByDefault="false"
+        android:searchIcon="@drawable/search_small"
+        android:queryBackground="@android:color/transparent"
+        android:background="@drawable/search_view_bg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/c_header" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/c_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:paddingTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c_header" />
+        app:layout_constraintTop_toBottomOf="@+id/c_search_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
