@@ -10,6 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoChat">
         <activity
+            android:name=".Profile"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Contacts"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".SignUpProfilePicture"
             android:exported="true">
             <intent-filter>

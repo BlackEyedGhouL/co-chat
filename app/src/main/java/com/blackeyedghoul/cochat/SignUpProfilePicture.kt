@@ -409,7 +409,8 @@ class SignUpProfilePicture : AppCompatActivity() {
             "username" to name.toString(),
             "profilePicture" to selectedImage,
             "joinedDate" to Timestamp.now(),
-            "phoneNumber" to currentUser!!.phoneNumber
+            "phoneNumber" to currentUser!!.phoneNumber,
+            "bio" to "Hi \uD83D\uDC4B\uD83C\uDFFC I am using CoChat."
         )
 
         db.collection("users").document(currentUser.uid)
@@ -464,54 +465,3 @@ class SignUpProfilePicture : AppCompatActivity() {
         progressDialogActivity = WelcomeScreen()
     }
 }
-
-//when (selectedImage) {
-//    "01" -> {
-//        uploadToStorage(R.drawable.pp_1)
-//    }
-//    "02" -> {
-//        uploadToStorage(R.drawable.pp_2)
-//    }
-//    "03" -> {
-//        uploadToStorage(R.drawable.pp_3)
-//    }
-//    "04" -> {
-//        uploadToStorage(R.drawable.pp_4)
-//    }
-//    "05" -> {
-//        uploadToStorage(R.drawable.pp_5)
-//    }
-//    "06" -> {
-//        uploadToStorage(R.drawable.pp_6)
-//    }
-//    "07" -> {
-//        uploadToStorage(R.drawable.pp_7)
-//    }
-//    "08" -> {
-//        uploadToStorage(R.drawable.pp_8)
-//    }
-//    "09" -> {
-//        uploadToStorage(R.drawable.pp_9)
-//    }
-//    "10" -> {
-//        uploadToStorage(R.drawable.pp_10)
-//    }
-//    "11" -> {
-//        uploadToStorage(R.drawable.pp_11)
-//    }
-//    "12" -> {
-//        uploadToStorage(R.drawable.pp_12)
-//    }
-//    "13" -> {
-//        uploadToStorage(R.drawable.pp_13)
-//    }
-//    "14" -> {
-//        uploadToStorage(R.drawable.pp_14)
-//    }
-//    "15" -> {
-//        uploadToStorage(R.drawable.pp_15)
-//    }
-//    "16" -> {
-//        uploadToStorage(R.drawable.pp_16)
-//    }
-//}

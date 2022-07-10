@@ -11,4 +11,6 @@
     <string name="su_proceed">Proceed</string>
     <string name="su_name_txt">Your full name</string>
     <string name="sp_title">Pick a profile picture</string>
+    <string name="h_search_txt">Search</string>
+    <string name="c_header_name">Select contact</string>
 </resources>

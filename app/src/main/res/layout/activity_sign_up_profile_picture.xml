@@ -15,7 +15,7 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="fitXY"
-        android:src="@drawable/back"
+        android:src="@drawable/arrow_back"
         app:elevation="12dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"

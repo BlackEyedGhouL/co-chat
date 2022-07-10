@@ -15,7 +15,7 @@
         android:clickable="true"
         android:focusable="true"
         android:scaleType="fitXY"
-        android:src="@drawable/back"
+        android:src="@drawable/arrow_back"
         app:elevation="12dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
@@ -69,7 +69,7 @@
             android:textSize="17sp"
             android:paddingVertical="17dp"
             android:hint="@string/su_name_txt"
-            android:textColorHint="#687980"
+            android:textColorHint="@color/secondary_text"
             android:textColor="@color/primary_text"
             tools:ignore="TouchTargetSizeCheck,TextContrastCheck" />
 
