@@ -1,5 +1,6 @@
 package com.blackeyedghoul.cochat
 
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -53,6 +54,7 @@ class SignUpProfilePicture : AppCompatActivity() {
     private var selectedImage: String = ""
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var auth: FirebaseAuth
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -397,6 +399,8 @@ class SignUpProfilePicture : AppCompatActivity() {
                 }
             }
         }
+
+        checkNetworkConnection()
     }
 
     private fun finalizeAccount() {
@@ -427,6 +431,31 @@ class SignUpProfilePicture : AppCompatActivity() {
                 progressDialogActivity.dismissProgressDialog()
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_LONG).show()
             }
+    }
+
+    private fun checkNetworkConnection() {
+        val networkConnection = InternetConnection(this)
+        networkConnection.observe(this) { isConnected ->
+
+            val view = View.inflate(this, R.layout.no_internet_alert, null)
+            val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
+            builder.setView(view)
+
+            if (isConnected) {
+                Log.d(TAG, "NetworkConnection: true")
+                alertDialog?.dismiss()
+            } else {
+                Log.d(TAG, "NetworkConnection: false")
+                alertDialog = builder.create()
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
+                alertDialog!!.show()
+
+                val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
+                dismiss?.setOnClickListener{
+                    alertDialog?.dismiss()
+                }
+            }
+        }
     }
 
     private fun init() {

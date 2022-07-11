@@ -10,10 +10,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -66,7 +63,7 @@ class Home : AppCompatActivity() {
         networkConnection.observe(this) { isConnected ->
 
             val view = View.inflate(this, R.layout.no_internet_alert, null)
-            val builder = AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
             builder.setView(view)
 
             if (isConnected) {
@@ -75,8 +72,13 @@ class Home : AppCompatActivity() {
             } else {
                 Log.d(TAG, "NetworkConnection: false")
                 alertDialog = builder.create()
-                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
                 alertDialog!!.show()
+
+                val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
+                dismiss?.setOnClickListener{
+                    alertDialog?.dismiss()
+                }
             }
         }
     }

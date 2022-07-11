@@ -1,9 +1,13 @@
 package com.blackeyedghoul.cochat
 
+import android.app.AlertDialog
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
@@ -12,6 +16,7 @@ class SignUpUserName : AppCompatActivity() {
 
     private lateinit var name: TextInputEditText
     private lateinit var proceed: Button
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +25,8 @@ class SignUpUserName : AppCompatActivity() {
         init()
 
         name.addTextChangedListener(nameTextWatcher)
+
+        checkNetworkConnection()
     }
 
     private var nameTextWatcher = object: TextWatcher {
@@ -46,6 +53,31 @@ class SignUpUserName : AppCompatActivity() {
         }
 
         override fun afterTextChanged(p0: Editable?) {}
+    }
+
+    private fun checkNetworkConnection() {
+        val networkConnection = InternetConnection(this)
+        networkConnection.observe(this) { isConnected ->
+
+            val view = View.inflate(this, R.layout.no_internet_alert, null)
+            val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
+            builder.setView(view)
+
+            if (isConnected) {
+                Log.d(ContentValues.TAG, "NetworkConnection: true")
+                alertDialog?.dismiss()
+            } else {
+                Log.d(ContentValues.TAG, "NetworkConnection: false")
+                alertDialog = builder.create()
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
+                alertDialog!!.show()
+
+                val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
+                dismiss?.setOnClickListener{
+                    alertDialog?.dismiss()
+                }
+            }
+        }
     }
 
     private fun init() {

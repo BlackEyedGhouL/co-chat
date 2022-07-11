@@ -1,6 +1,7 @@
 package com.blackeyedghoul.cochat
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentResolver
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -10,10 +11,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.SearchView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ContactsAdapter
@@ -43,6 +41,7 @@ class Contacts : AppCompatActivity() {
     private lateinit var inviteContactList: ArrayList<Contact>
     private lateinit var noResults: TextView
     private lateinit var inviteToChat: TextView
+    private var alertDialog: AlertDialog? = null
 
     @SuppressLint("DiscouragedPrivateApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,8 +55,7 @@ class Contacts : AppCompatActivity() {
         recyclerViewContacts.adapter = contactsAdapter
         recyclerViewInvite.adapter = inviteContactsAdapter
         progressDialogActivity.showProgressDialog(this)
-        getContactList()
-        fetchUsers()
+        checkNetworkConnection()
 
         menu.setOnClickListener {
             val popupMenu = PopupMenu(this, it)
@@ -139,6 +137,34 @@ class Contacts : AppCompatActivity() {
                 return true
             }
         })
+    }
+
+    private fun checkNetworkConnection() {
+        val networkConnection = InternetConnection(this)
+        networkConnection.observe(this) { isConnected ->
+
+            val view = View.inflate(this, R.layout.no_internet_alert, null)
+            val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
+            builder.setView(view)
+
+            if (isConnected) {
+                Log.d(TAG, "NetworkConnection: true")
+                alertDialog?.dismiss()
+                getContactList()
+                fetchUsers()
+            } else {
+                Log.d(TAG, "NetworkConnection: false")
+                progressDialogActivity.dismissProgressDialog()
+                alertDialog = builder.create()
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
+                alertDialog!!.show()
+
+                val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
+                dismiss?.setOnClickListener{
+                    alertDialog?.dismiss()
+                }
+            }
+        }
     }
 
     private val projection = arrayOf(

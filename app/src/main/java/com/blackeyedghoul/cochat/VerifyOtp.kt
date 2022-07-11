@@ -1,11 +1,14 @@
 package com.blackeyedghoul.cochat
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +38,7 @@ class VerifyOtp : AppCompatActivity() {
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
+    private var alertDialog: AlertDialog? = null
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +117,8 @@ class VerifyOtp : AppCompatActivity() {
             progressDialogActivity.showProgressDialog(this)
             resendVerificationCode(phoneNumber!!, resendToken)
         }
+
+        checkNetworkConnection()
     }
 
     private fun resendVerificationCode(phoneNumber: String, token: PhoneAuthProvider.ForceResendingToken) {
@@ -159,6 +165,31 @@ class VerifyOtp : AppCompatActivity() {
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Get failed with ", exception)
             }
+    }
+
+    private fun checkNetworkConnection() {
+        val networkConnection = InternetConnection(this)
+        networkConnection.observe(this) { isConnected ->
+
+            val view = View.inflate(this, R.layout.no_internet_alert, null)
+            val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
+            builder.setView(view)
+
+            if (isConnected) {
+                Log.d(TAG, "NetworkConnection: true")
+                alertDialog?.dismiss()
+            } else {
+                Log.d(TAG, "NetworkConnection: false")
+                alertDialog = builder.create()
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
+                alertDialog!!.show()
+
+                val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
+                dismiss?.setOnClickListener{
+                    alertDialog?.dismiss()
+                }
+            }
+        }
     }
 
     private fun init() {

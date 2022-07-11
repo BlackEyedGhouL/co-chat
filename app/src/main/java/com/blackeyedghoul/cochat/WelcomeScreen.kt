@@ -14,6 +14,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -173,7 +174,7 @@ class WelcomeScreen : AppCompatActivity() {
         networkConnection.observe(this) { isConnected ->
 
             val view = View.inflate(this, R.layout.no_internet_alert, null)
-            val builder = AlertDialog.Builder(this)
+            val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
             builder.setView(view)
 
             if (isConnected) {
@@ -184,6 +185,11 @@ class WelcomeScreen : AppCompatActivity() {
                 alertDialog = builder.create()
                 alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
                 alertDialog!!.show()
+
+                val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
+                dismiss?.setOnClickListener{
+                    alertDialog?.dismiss()
+                }
             }
         }
     }

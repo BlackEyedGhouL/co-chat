@@ -20,4 +20,5 @@
     <string name="ni_title">Oops!</string>
     <string name="ni_subtitle">There\'s no internet connection\nPlease check your internet\nconnection</string>
     <string name="ni_retry">Retry</string>
+    <string name="ni_dismiss">Dismiss</string>
 </resources>

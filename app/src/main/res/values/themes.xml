@@ -24,4 +24,9 @@
         <item name="colorControlActivated">@color/secondary_text</item>
     </style>
 
+    <style name="FullscreenAlertDialog" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+    </style>
+
 </resources>
