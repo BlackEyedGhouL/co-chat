@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ContentResolver
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.Intent
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
@@ -14,6 +15,7 @@ import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ContactsAdapter
 import com.blackeyedghoul.cochat.adapters.InviteContactsAdapter
@@ -40,8 +42,9 @@ class Contacts : AppCompatActivity() {
     private lateinit var contactList: ArrayList<Contact>
     private lateinit var inviteContactList: ArrayList<Contact>
     private lateinit var noResults: TextView
+    private lateinit var inviteToChat: TextView
 
-    @SuppressLint("DiscouragedPrivateApi")
+    @SuppressLint("DiscouragedPrivateApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts)
@@ -61,6 +64,12 @@ class Contacts : AppCompatActivity() {
             popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.c_menu_invite -> {
+                        val intent = Intent()
+                        intent.action = Intent.ACTION_SEND
+                        intent.putExtra(Intent.EXTRA_TEXT, "Hey \uD83D\uDC4B\uD83C\uDFFC wanna try out CoChat? It's a simple, fast app we can use to chat. Get it at https://github.com/BlackEyedGhouL/co-chat")
+                        intent.type = "text/plain"
+
+                        startActivity(Intent.createChooser(intent, "Share"))
                         true
                     }
                     else -> false
@@ -116,7 +125,12 @@ class Contacts : AppCompatActivity() {
                 }
 
                 if (contactsAdapter.itemCount == 0) {
-                    noResults.text = "No results found in '$newText'"
+
+                    if (newText.isNotEmpty())
+                        noResults.text = "No results found for '$newText'"
+                    else
+                        noResults.text = "No contacts found"
+
                     noResults.visibility = View.VISIBLE
                 } else {
                     noResults.visibility = View.GONE
@@ -202,7 +216,7 @@ class Contacts : AppCompatActivity() {
             }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     private fun fetchUsers() {
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
@@ -228,6 +242,14 @@ class Contacts : AppCompatActivity() {
 
                 contactsAdapter.notifyDataSetChanged()
                 displayUsersArrayList.addAll(usersArrayList)
+
+                if (contactsAdapter.itemCount == 0) {
+                    noResults.text = "No contacts found"
+                    noResults.visibility = View.VISIBLE
+                } else {
+                    noResults.visibility = View.GONE
+                }
+
                 progressDialogActivity.dismissProgressDialog()
             }
     }
@@ -269,5 +291,6 @@ class Contacts : AppCompatActivity() {
         contactList = arrayListOf()
         inviteContactList = arrayListOf()
         noResults = findViewById(R.id.c_no_results_text)
+        inviteToChat = findViewById(R.id.c_invite_text)
     }
 }

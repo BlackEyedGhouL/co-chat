@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/c_menu_invite"
-        android:icon="@drawable/invite"
         android:title="@string/c_menu_invite" />
 
 </menu>

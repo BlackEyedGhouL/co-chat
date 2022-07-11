@@ -1,6 +1,7 @@
 package com.blackeyedghoul.cochat.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,12 @@ class InviteContactsAdapter(private val inviteUsersList: ArrayList<Contact>, pri
         holder.fullName.text = user.name
 
         holder.invite.setOnClickListener{
+            val intent = Intent()
+            intent.action = Intent.ACTION_SEND
+            intent.putExtra(Intent.EXTRA_TEXT, "Hey ${user.name} \uD83D\uDC4B\uD83C\uDFFC wanna try out CoChat? It's a simple, fast app we can use to chat. Get it at https://github.com/BlackEyedGhouL/co-chat")
+            intent.type = "text/plain"
 
+            context.startActivity(Intent.createChooser(intent, "Share"))
         }
     }
 
