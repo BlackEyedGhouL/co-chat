@@ -13,4 +13,5 @@
     <string name="sp_title">Pick a profile picture</string>
     <string name="h_search_txt">Search</string>
     <string name="c_header_name">Select contact</string>
+    <string name="c_menu_invite">Invite a friend</string>
 </resources>

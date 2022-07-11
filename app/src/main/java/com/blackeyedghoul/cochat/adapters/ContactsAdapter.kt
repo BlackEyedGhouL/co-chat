@@ -1,19 +1,16 @@
 package com.blackeyedghoul.cochat.adapters
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.Chat
 import com.blackeyedghoul.cochat.R
-import com.blackeyedghoul.cochat.SignUpProfilePicture
 import com.blackeyedghoul.cochat.models.User
 
 class ContactsAdapter(private val usersList: ArrayList<User>, private val context: Context): RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
@@ -87,6 +84,7 @@ class ContactsAdapter(private val usersList: ArrayList<User>, private val contex
             val intent = Intent(context, Chat::class.java)
             intent.putExtra("UID", gUid)
             context.startActivity(intent)
+            (context as Activity).finish()
         }
 
         holder.profilePicture.setOnClickListener{
@@ -96,6 +94,7 @@ class ContactsAdapter(private val usersList: ArrayList<User>, private val contex
             val intent = Intent(context, Chat::class.java)
             intent.putExtra("UID", gUid)
             context.startActivity(intent)
+            (context as Activity).finish()
         }
     }
 

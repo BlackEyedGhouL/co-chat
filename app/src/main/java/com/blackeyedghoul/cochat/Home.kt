@@ -3,12 +3,19 @@ package com.blackeyedghoul.cochat
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.provider.Settings
 import android.util.Log
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.blackeyedghoul.cochat.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -23,6 +30,7 @@ class Home : AppCompatActivity() {
     private lateinit var search: SearchView
     private lateinit var greeting: TextView
     private lateinit var progressDialogActivity: WelcomeScreen
+    private val CONTACT_PERMISSION_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,13 +44,52 @@ class Home : AppCompatActivity() {
         getCurrentUserInfo(currentUser!!.uid)
 
         contacts.setOnClickListener {
-            val intent = Intent(this, Contacts::class.java)
-            startActivity(intent)
+            if (checkContactsPermission()) {
+                val intent = Intent(this, Contacts::class.java)
+                startActivity(intent)
+            } else {
+                requestContactsPermission()
+            }
         }
 
         profile.setOnClickListener {
             val intent = Intent(this, Profile::class.java)
             startActivity(intent)
+        }
+    }
+
+    private fun checkContactsPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.READ_CONTACTS
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestContactsPermission() {
+        val permission = arrayOf(android.Manifest.permission.READ_CONTACTS)
+        ActivityCompat.requestPermissions(this, permission, CONTACT_PERMISSION_CODE)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == CONTACT_PERMISSION_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                val intent = Intent(this, Contacts::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(applicationContext, "Required permission denied", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent()
+                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                val uri = Uri.fromParts("package", this.packageName, null)
+                intent.data = uri
+                this.startActivity(intent)
+            }
         }
     }
 

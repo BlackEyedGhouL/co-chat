@@ -1,10 +1,15 @@
 package com.blackeyedghoul.cochat
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
+import android.content.ContentResolver
+import android.content.ContentValues.TAG
+import android.content.Context
+import android.database.Cursor
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +19,7 @@ import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.util.*
+
 
 class Contacts : AppCompatActivity() {
 
@@ -26,6 +32,7 @@ class Contacts : AppCompatActivity() {
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var search: SearchView
 
+    @SuppressLint("DiscouragedPrivateApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts)
@@ -38,6 +45,33 @@ class Contacts : AppCompatActivity() {
         recyclerView.adapter = adapter
         progressDialogActivity.showProgressDialog(this)
         fetchUsers()
+
+        menu.setOnClickListener{
+            val popupMenu = PopupMenu(this, it)
+            popupMenu.setOnMenuItemClickListener{ item ->
+                when (item.itemId) {
+                    R.id.c_menu_invite -> {
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            popupMenu.inflate(R.menu.contacts_menu)
+
+            try {
+                val fieldPopup = PopupMenu::class.java.getDeclaredField("mPopup")
+                fieldPopup.isAccessible = true
+                val mPopup = fieldPopup.get(popupMenu)
+                mPopup.javaClass
+                    .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                    .invoke(mPopup, true)
+            } catch (e: Exception) {
+                Log.e(TAG, "Ended with exception: ", e)
+            } finally {
+                popupMenu.show()
+            }
+        }
 
         back.setOnClickListener{
             onBackPressed()
@@ -83,13 +117,17 @@ class Contacts : AppCompatActivity() {
             .orderBy("username", Query.Direction.ASCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
-                    Log.d(ContentValues.TAG, "Get failed with ", error)
+                    Log.d(TAG, "Get failed with ", error)
                     return@addSnapshotListener
                 }
 
                 for (doc: DocumentChange in value?.documentChanges!!) {
                     if (doc.type == DocumentChange.Type.ADDED) {
-                        usersArrayList.add(doc.document.toObject(User::class.java))
+                        val user: User = doc.document.toObject(User::class.java)
+                        val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
+                        Log.e(TAG, "ContactNumber: ".plus(tempPhoneNumber))
+                        if(contactExists(this, tempPhoneNumber))
+                            usersArrayList.add(user)
                     }
                 }
 
@@ -97,6 +135,31 @@ class Contacts : AppCompatActivity() {
                 displayUsersArrayList.addAll(usersArrayList)
                 progressDialogActivity.dismissProgressDialog()
             }
+    }
+
+    @SuppressLint("Range", "Recycle")
+    private fun contactExists(context: Context, number: String?): Boolean {
+        return if (number != null) {
+            val cr: ContentResolver = context.contentResolver
+            val curContacts: Cursor? =
+                cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null)
+            if (curContacts != null) {
+                while (curContacts.moveToNext()) {
+                    val contactNumber: String =
+                        curContacts.getString(curContacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                    if (number == contactNumber) {
+                        return true
+                    }
+                }
+            }
+            false
+        } else {
+            false
+        }
+    }
+
+    private fun convertPhoneNumber(phoneNumber: String): String {
+        return "0".plus(phoneNumber.substring(3, phoneNumber.lastIndex + 1))
     }
 
     private fun init() {
