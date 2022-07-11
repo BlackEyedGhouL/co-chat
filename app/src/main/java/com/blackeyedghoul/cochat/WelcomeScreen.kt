@@ -2,6 +2,7 @@
 
 package com.blackeyedghoul.cochat
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Context
@@ -12,6 +13,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -37,6 +39,7 @@ class WelcomeScreen : AppCompatActivity() {
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     private lateinit var progressDialog: ProgressDialog
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,22 +49,23 @@ class WelcomeScreen : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        val images = listOf(R.drawable.welcome_pic_1, R.drawable.welcome_pic_2, R.drawable.welcome_pic_3)
+        val images =
+            listOf(R.drawable.welcome_pic_1, R.drawable.welcome_pic_2, R.drawable.welcome_pic_3)
         val adapter = ViewPagerAdapter(images)
         viewPager2.adapter = adapter
 
         indicator.setViewPager(viewPager2)
 
         // Show and hide keyboard
-        window.decorView.viewTreeObserver.addOnGlobalLayoutListener{
+        window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
             window.decorView.getWindowVisibleDisplayFrame(r)
 
-            val height =window.decorView.height
-            if(height - r.bottom>height*0.1399){
+            val height = window.decorView.height
+            if (height - r.bottom > height * 0.1399) {
                 viewPager2.alpha = 0.0f // Visible
                 indicator.alpha = 0.0f
-            }else{
+            } else {
                 viewPager2.alpha = 1.0f // Invisible
                 indicator.alpha = 1.0f
             }
@@ -71,7 +75,7 @@ class WelcomeScreen : AppCompatActivity() {
 
         // Check the current user whether he logged in already
         val currentUser = auth.currentUser
-        if(currentUser != null) {
+        if (currentUser != null) {
             startActivity(Intent(applicationContext, Home::class.java))
             finish()
         }
@@ -81,7 +85,7 @@ class WelcomeScreen : AppCompatActivity() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 Log.d(TAG, "onVerificationCompleted: $credential")
-                val intent = Intent(applicationContext,VerifyOtp::class.java)
+                val intent = Intent(applicationContext, VerifyOtp::class.java)
                 intent.putExtra("IS_ON_VERIFICATION_COMPLETED", true)
                 intent.putExtra("CREDENTIALS", credential)
                 intent.putExtra("PHONE_NUMBER", "+94".plus(phoneNumber.text.toString().trim()))
@@ -98,14 +102,14 @@ class WelcomeScreen : AppCompatActivity() {
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
 
-                Log.d("TAG","onCodeSent: $verificationId")
+                Log.d("TAG", "onCodeSent: $verificationId")
 
                 storedVerificationId = verificationId
                 resendToken = token
 
                 dismissProgressDialog()
 
-                val intent = Intent(applicationContext,VerifyOtp::class.java)
+                val intent = Intent(applicationContext, VerifyOtp::class.java)
                 intent.putExtra("VERIFICATION_ID", storedVerificationId)
                 intent.putExtra("RESEND_TOKEN", resendToken)
                 intent.putExtra("IS_ON_VERIFICATION_COMPLETED", false)
@@ -113,9 +117,11 @@ class WelcomeScreen : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+
+        checkNetworkConnection()
     }
 
-    private var signTextWatcher = object: TextWatcher{
+    private var signTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -126,7 +132,7 @@ class WelcomeScreen : AppCompatActivity() {
                 next.isClickable = true
                 next.isFocusable = true
 
-                next.setOnClickListener{
+                next.setOnClickListener {
                     showProgressDialog(this@WelcomeScreen)
                     sendVerificationCode(phoneNumber)
                 }
@@ -148,7 +154,7 @@ class WelcomeScreen : AppCompatActivity() {
             .setCallbacks(callbacks)
             .build()
         PhoneAuthProvider.verifyPhoneNumber(options)
-       }
+    }
 
     fun showProgressDialog(context: Context?) {
         progressDialog = ProgressDialog(context)
@@ -160,6 +166,26 @@ class WelcomeScreen : AppCompatActivity() {
 
     fun dismissProgressDialog() {
         progressDialog.dismiss()
+    }
+
+    private fun checkNetworkConnection() {
+        val networkConnection = InternetConnection(this)
+        networkConnection.observe(this) { isConnected ->
+
+            val view = View.inflate(this, R.layout.no_internet_alert, null)
+            val builder = AlertDialog.Builder(this)
+            builder.setView(view)
+
+            if (isConnected) {
+                Log.d(TAG, "NetworkConnection: true")
+                alertDialog?.dismiss()
+            } else {
+                Log.d(TAG, "NetworkConnection: false")
+                alertDialog = builder.create()
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                alertDialog!!.show()
+            }
+        }
     }
 
     private fun init() {

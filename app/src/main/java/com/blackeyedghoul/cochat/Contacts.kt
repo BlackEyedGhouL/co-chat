@@ -15,7 +15,6 @@ import android.widget.PopupMenu
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ContactsAdapter
 import com.blackeyedghoul.cochat.adapters.InviteContactsAdapter
@@ -27,6 +26,7 @@ import com.google.firebase.firestore.Query
 import java.util.*
 
 
+@Suppress("NAME_SHADOWING")
 class Contacts : AppCompatActivity() {
 
     private lateinit var menu: ImageView
@@ -141,7 +141,7 @@ class Contacts : AppCompatActivity() {
         })
     }
 
-    private val PROJECTION = arrayOf(
+    private val projection = arrayOf(
         ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
         ContactsContract.Contacts.DISPLAY_NAME,
         ContactsContract.CommonDataKinds.Phone.NUMBER
@@ -151,7 +151,7 @@ class Contacts : AppCompatActivity() {
         val cr = contentResolver
         val cursor = cr.query(
             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-            PROJECTION,
+            projection,
             null,
             null,
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC"

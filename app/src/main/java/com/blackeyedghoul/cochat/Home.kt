@@ -1,14 +1,15 @@
 package com.blackeyedghoul.cochat
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
@@ -30,7 +31,8 @@ class Home : AppCompatActivity() {
     private lateinit var search: SearchView
     private lateinit var greeting: TextView
     private lateinit var progressDialogActivity: WelcomeScreen
-    private val CONTACT_PERMISSION_CODE = 1
+    private val contactPermissionCode = 1
+    private var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class Home : AppCompatActivity() {
         val currentUser = auth.currentUser
 
         init()
+        checkNetworkConnection()
         progressDialogActivity.showProgressDialog(this)
         getCurrentUserInfo(currentUser!!.uid)
 
@@ -58,6 +61,26 @@ class Home : AppCompatActivity() {
         }
     }
 
+    private fun checkNetworkConnection() {
+        val networkConnection = InternetConnection(this)
+        networkConnection.observe(this) { isConnected ->
+
+            val view = View.inflate(this, R.layout.no_internet_alert, null)
+            val builder = AlertDialog.Builder(this)
+            builder.setView(view)
+
+            if (isConnected) {
+                Log.d(TAG, "NetworkConnection: true")
+                alertDialog?.dismiss()
+            } else {
+                Log.d(TAG, "NetworkConnection: false")
+                alertDialog = builder.create()
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                alertDialog!!.show()
+            }
+        }
+    }
+
     private fun checkContactsPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             this,
@@ -67,7 +90,7 @@ class Home : AppCompatActivity() {
 
     private fun requestContactsPermission() {
         val permission = arrayOf(android.Manifest.permission.READ_CONTACTS)
-        ActivityCompat.requestPermissions(this, permission, CONTACT_PERMISSION_CODE)
+        ActivityCompat.requestPermissions(this, permission, contactPermissionCode)
     }
 
     override fun onRequestPermissionsResult(
@@ -77,7 +100,7 @@ class Home : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == CONTACT_PERMISSION_CODE) {
+        if (requestCode == contactPermissionCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 val intent = Intent(this, Contacts::class.java)
                 startActivity(intent)

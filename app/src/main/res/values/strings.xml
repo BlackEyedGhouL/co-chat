@@ -17,4 +17,7 @@
     <string name="c_contacts_text">Contacts on CoChat</string>
     <string name="c_invite_text">Invite to CoChat</string>
     <string name="c_invite_user_card_button">Invite</string>
+    <string name="ni_title">Oops!</string>
+    <string name="ni_subtitle">There\'s no internet connection\nPlease check your internet\nconnection</string>
+    <string name="ni_retry">Retry</string>
 </resources>
