@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FAF9F6">
+
+    <ImageView
+        android:id="@+id/c_invite_user_card_profile_picture"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/pp_17"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/c_invite_user_card_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/cottorway_bold"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/primary_text"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@+id/c_invite_user_card_profile_picture"
+        app:layout_constraintStart_toEndOf="@+id/c_invite_user_card_profile_picture"
+        app:layout_constraintTop_toTopOf="@+id/c_invite_user_card_profile_picture" />
+
+    <Button
+        android:id="@+id/c_invite_user_card_button"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="@string/c_invite_user_card_button"
+        android:textColor="@color/primary_color"
+        app:layout_constraintBottom_toBottomOf="@+id/c_invite_user_card_full_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/c_invite_user_card_full_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

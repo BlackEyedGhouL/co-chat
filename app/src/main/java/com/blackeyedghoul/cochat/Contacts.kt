@@ -14,6 +14,8 @@ import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ContactsAdapter
+import com.blackeyedghoul.cochat.adapters.InviteContactsAdapter
+import com.blackeyedghoul.cochat.models.Contact
 import com.blackeyedghoul.cochat.models.User
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,12 +27,16 @@ class Contacts : AppCompatActivity() {
 
     private lateinit var menu: ImageView
     private lateinit var back: ImageView
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewContacts: RecyclerView
+    private lateinit var recyclerViewInvite: RecyclerView
     private lateinit var usersArrayList: ArrayList<User>
     private lateinit var displayUsersArrayList: ArrayList<User>
-    private lateinit var adapter: ContactsAdapter
+    private lateinit var contactsAdapter: ContactsAdapter
+    private lateinit var inviteContactsAdapter: InviteContactsAdapter
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var search: SearchView
+    private lateinit var contactList: ArrayList<Contact>
+    private lateinit var inviteContactList: ArrayList<Contact>
 
     @SuppressLint("DiscouragedPrivateApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,16 +45,17 @@ class Contacts : AppCompatActivity() {
 
         init()
 
-        usersArrayList = arrayListOf()
-        displayUsersArrayList = arrayListOf()
-        adapter = ContactsAdapter(displayUsersArrayList, this)
-        recyclerView.adapter = adapter
+        contactsAdapter = ContactsAdapter(displayUsersArrayList, this)
+        inviteContactsAdapter = InviteContactsAdapter(inviteContactList, this)
+        recyclerViewContacts.adapter = contactsAdapter
+        recyclerViewInvite.adapter = inviteContactsAdapter
         progressDialogActivity.showProgressDialog(this)
+        getContactList()
         fetchUsers()
 
-        menu.setOnClickListener{
+        menu.setOnClickListener {
             val popupMenu = PopupMenu(this, it)
-            popupMenu.setOnMenuItemClickListener{ item ->
+            popupMenu.setOnMenuItemClickListener { item ->
                 when (item.itemId) {
                     R.id.c_menu_invite -> {
                         true
@@ -73,15 +80,15 @@ class Contacts : AppCompatActivity() {
             }
         }
 
-        back.setOnClickListener{
+        back.setOnClickListener {
             onBackPressed()
         }
 
-        search.setOnClickListener{
+        search.setOnClickListener {
             search.isIconified = false
         }
 
-        search.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 return true
             }
@@ -92,22 +99,97 @@ class Contacts : AppCompatActivity() {
                 if (newText!!.isNotEmpty()) {
                     displayUsersArrayList.clear()
                     val search = newText.lowercase(Locale.getDefault())
-                    usersArrayList.forEach{
+                    usersArrayList.forEach {
                         if (it.username.lowercase(Locale.getDefault()).contains(search)) {
                             displayUsersArrayList.add(it)
                         }
                     }
 
-                    recyclerView.adapter!!.notifyDataSetChanged()
+                    recyclerViewContacts.adapter!!.notifyDataSetChanged()
                 } else {
                     displayUsersArrayList.clear()
                     displayUsersArrayList.addAll(usersArrayList)
-                    recyclerView.adapter!!.notifyDataSetChanged()
+                    recyclerViewContacts.adapter!!.notifyDataSetChanged()
                 }
 
                 return true
             }
         })
+    }
+
+    private val PROJECTION = arrayOf(
+        ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+        ContactsContract.Contacts.DISPLAY_NAME,
+        ContactsContract.CommonDataKinds.Phone.NUMBER
+    )
+
+    private fun getContactList() {
+        val cr = contentResolver
+        val cursor = cr.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            PROJECTION,
+            null,
+            null,
+            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC"
+        )
+        if (cursor != null) {
+            val mobileNoSet = HashSet<String>()
+            cursor.use { cursor ->
+                val nameIndex = cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)
+                val numberIndex =
+                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                var name: String
+                var number: String
+                while (cursor.moveToNext()) {
+                    name = cursor.getString(nameIndex)
+                    number = cursor.getString(numberIndex)
+                    number = number.replace(" ", "")
+                    if (!mobileNoSet.contains(number)) {
+                        contactList.add(Contact(name, number))
+                        mobileNoSet.add(number)
+                        Log.d(TAG, "Phone Number: Name = $name || Number = $number")
+
+                        userExists(name, number)
+                    }
+                }
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun userExists(name: String?, number: String) {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users")
+            .orderBy("username", Query.Direction.ASCENDING)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.d(TAG, "Get failed with ", error)
+                    return@addSnapshotListener
+                }
+
+                for (doc: DocumentChange in value?.documentChanges!!) {
+                    if (doc.type == DocumentChange.Type.ADDED) {
+                        val user: User = doc.document.toObject(User::class.java)
+                        val contact = Contact(name!!, number)
+
+                        if (!inviteContactList.contains(contact)) {
+                            if (user.phoneNumber.substring(0, 2) == "+94") {
+                                val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
+                                if (number != tempPhoneNumber && number != user.phoneNumber) {
+                                    inviteContactList.add(contact)
+                                }
+                            } else {
+                                if (number != user.phoneNumber) {
+                                    inviteContactList.add(contact)
+                                }
+                            }
+                            Log.d(TAG, "Invite : Name = $name || Number = $number")
+                        }
+                    }
+                }
+
+                inviteContactsAdapter.notifyDataSetChanged()
+            }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -125,13 +207,16 @@ class Contacts : AppCompatActivity() {
                     if (doc.type == DocumentChange.Type.ADDED) {
                         val user: User = doc.document.toObject(User::class.java)
                         val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
-                        Log.e(TAG, "ContactNumber: ".plus(tempPhoneNumber))
-                        if(contactExists(this, tempPhoneNumber))
+                        if (contactExists(this, tempPhoneNumber) || contactExists(
+                                this,
+                                user.phoneNumber
+                            )
+                        )
                             usersArrayList.add(user)
                     }
                 }
 
-                adapter.notifyDataSetChanged()
+                contactsAdapter.notifyDataSetChanged()
                 displayUsersArrayList.addAll(usersArrayList)
                 progressDialogActivity.dismissProgressDialog()
             }
@@ -166,7 +251,12 @@ class Contacts : AppCompatActivity() {
         menu = findViewById(R.id.c_more)
         search = findViewById(R.id.c_search_view)
         back = findViewById(R.id.c_back)
-        recyclerView = findViewById(R.id.c_recycler_view)
+        recyclerViewContacts = findViewById(R.id.c_contacts_recycler_view)
+        recyclerViewInvite = findViewById(R.id.c_invite_recycler_view)
         progressDialogActivity = WelcomeScreen()
+        usersArrayList = arrayListOf()
+        displayUsersArrayList = arrayListOf()
+        contactList = arrayListOf()
+        inviteContactList = arrayListOf()
     }
 }
