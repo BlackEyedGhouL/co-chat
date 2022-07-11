@@ -13,7 +13,10 @@ import com.blackeyedghoul.cochat.Chat
 import com.blackeyedghoul.cochat.R
 import com.blackeyedghoul.cochat.models.User
 
-class ContactsAdapter(private val usersList: ArrayList<User>, private val context: Context): RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
+class ContactsAdapter(
+    private val usersList: ArrayList<User>,
+    private val context: Context
+): RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

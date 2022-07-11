@@ -107,6 +107,23 @@
         app:layout_constraintTop_toBottomOf="@+id/c_contacts_text" />
 
     <TextView
+        android:id="@+id/c_no_results_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:fontFamily="@font/cottorway_medium"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/secondary_text"
+        android:textSize="17sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/c_contacts_recycler_view" />
+
+    <TextView
         android:id="@+id/c_invite_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -119,7 +136,7 @@
         android:textColor="@color/secondary_text"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/c_contacts_recycler_view" />
+        app:layout_constraintTop_toBottomOf="@+id/c_no_results_text" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/c_invite_recycler_view"

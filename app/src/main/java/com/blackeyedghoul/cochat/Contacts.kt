@@ -8,9 +8,11 @@ import android.database.Cursor
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.SearchView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ContactsAdapter
@@ -37,6 +39,7 @@ class Contacts : AppCompatActivity() {
     private lateinit var search: SearchView
     private lateinit var contactList: ArrayList<Contact>
     private lateinit var inviteContactList: ArrayList<Contact>
+    private lateinit var noResults: TextView
 
     @SuppressLint("DiscouragedPrivateApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,7 +96,7 @@ class Contacts : AppCompatActivity() {
                 return true
             }
 
-            @SuppressLint("NotifyDataSetChanged")
+            @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 if (newText!!.isNotEmpty()) {
@@ -110,6 +113,13 @@ class Contacts : AppCompatActivity() {
                     displayUsersArrayList.clear()
                     displayUsersArrayList.addAll(usersArrayList)
                     recyclerViewContacts.adapter!!.notifyDataSetChanged()
+                }
+
+                if (contactsAdapter.itemCount == 0) {
+                    noResults.text = "No results found in '$newText'"
+                    noResults.visibility = View.VISIBLE
+                } else {
+                    noResults.visibility = View.GONE
                 }
 
                 return true
@@ -258,5 +268,6 @@ class Contacts : AppCompatActivity() {
         displayUsersArrayList = arrayListOf()
         contactList = arrayListOf()
         inviteContactList = arrayListOf()
+        noResults = findViewById(R.id.c_no_results_text)
     }
 }
