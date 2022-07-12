@@ -4,10 +4,12 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Program Files/Android/gradle-7.3.3/caches/transforms-3/ac6c9b25ffd6b71028b25ba21dfa25a6/transformed/jetified-Pinview-v1.4/res/drawable/sample_background.xml" value="0.145" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/bottom_sheet_round_corners.xml" value="0.119" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/btn_bg_proceed.xml" value="0.145" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/btn_bg_proceed_disable.xml" value="0.145" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/btn_invite_ripple.xml" value="0.1735" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/btn_proceed_ripple.xml" value="0.145" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/edit_card_ripple.xml" value="0.1" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/indicator_round.xml" value="0.1675925925925926" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/otp_box_bg.xml" value="0.1" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/popup_bg.xml" value="0.1" />
@@ -19,11 +21,12 @@
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_contacts.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_home.xml" value="0.20277777777777778" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_main.xml" value="0.18981481481481483" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_profile.xml" value="0.22592592592592592" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_profile.xml" value="0.20185185185185187" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_profile_picture.xml" value="0.21342592592592594" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_user_name.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_verify_otp.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_welcome_screen.xml" value="0.22592592592592592" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/change_profile_picture_sheet.xml" value="0.21481481481481482" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/contacts_user_card.xml" value="0.264" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/invite_user_card.xml" value="0.536" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/menu_icon.xml" value="0.22592592592592592" />

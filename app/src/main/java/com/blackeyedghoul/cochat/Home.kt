@@ -58,6 +58,12 @@ class Home : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        val currentUser = auth.currentUser
+        getCurrentUserInfo(currentUser!!.uid)
+        super.onResume()
+    }
+
     private fun checkNetworkConnection() {
         val networkConnection = InternetConnection(this)
         networkConnection.observe(this) { isConnected ->

@@ -21,4 +21,10 @@
     <string name="ni_subtitle">There\'s no internet connection\nPlease check your internet\nconnection</string>
     <string name="ni_retry">Retry</string>
     <string name="ni_dismiss">Dismiss</string>
+    <string name="p_header_name">Profile</string>
+    <string name="p_bio_hint">Bio</string>
+    <string name="p_username_hint">Name</string>
+    <string name="p_phone_number_hint">Phone</string>
+    <string name="cp_header_name">Change profile picture</string>
+    <string name="cp_done">Done</string>
 </resources>
