@@ -203,7 +203,11 @@ class Home : AppCompatActivity() {
     }
 
     private fun getFirstWord(fullName: String): String {
-        return fullName.substring(0, fullName.indexOf(" "))
+        return if (fullName.contains(" ")) {
+            fullName.substring(0, fullName.indexOf(" "))
+        } else {
+            fullName
+        }
     }
 
     private fun init() {

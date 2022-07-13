@@ -27,4 +27,6 @@
     <string name="p_phone_number_hint">Phone</string>
     <string name="cp_header_name">Change profile picture</string>
     <string name="cp_done">Done</string>
+    <string name="cu_header_name">Change username</string>
+    <string name="cu_name_txt_hint">*Maximum length is 20 characters</string>
 </resources>

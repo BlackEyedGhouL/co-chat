@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.blackeyedghoul.cochat.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,6 +29,9 @@ class Profile : AppCompatActivity() {
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var auth: FirebaseAuth
     private lateinit var user: User
+    private lateinit var editUsername: ConstraintLayout
+    private lateinit var editBio: ConstraintLayout
+    private lateinit var changeUsernameSheet: ChangeUsernameSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,18 +42,22 @@ class Profile : AppCompatActivity() {
 
         init()
 
+        checkNetworkConnection()
+        progressDialogActivity.showProgressDialog(this)
+        getUserDataRealTime(currentUser!!.uid)
+
         val changeProfilePictureBottomSheet = ChangeProfilePictureSheet()
         edit.setOnClickListener{
             changeProfilePictureBottomSheet.show(supportFragmentManager, "ChangeProfilePictureSheet")
         }
 
+        editUsername.setOnClickListener{
+            changeUsernameSheet.show(supportFragmentManager, "ChangeUsernameSheet")
+        }
+
         back.setOnClickListener{
             onBackPressed()
         }
-
-        checkNetworkConnection()
-        progressDialogActivity.showProgressDialog(this)
-        getUserDataRealTime(currentUser!!.uid)
     }
 
     private fun getUserDataRealTime(uid: String) {
@@ -72,6 +80,7 @@ class Profile : AppCompatActivity() {
                 bio.text = user.bio
                 phoneNumber.text = user.phoneNumber
                 setProfilePicture(user.profilePicture)
+                changeUsernameSheet = ChangeUsernameSheet(user.username)
 
                 progressDialogActivity.dismissProgressDialog()
 
@@ -92,6 +101,8 @@ class Profile : AppCompatActivity() {
         back = findViewById(R.id.p_back)
         profilePicture = findViewById(R.id.p_profile_picture)
         progressDialogActivity = WelcomeScreen()
+        editUsername = findViewById(R.id.p_username_card)
+        editBio = findViewById(R.id.p_bio_card)
     }
 
     private fun setProfilePicture(number: String) {
