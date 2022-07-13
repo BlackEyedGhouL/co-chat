@@ -41,7 +41,7 @@ class Home : AppCompatActivity() {
         init()
         checkNetworkConnection()
         progressDialogActivity.showProgressDialog(this)
-        getCurrentUserInfo(currentUser!!.uid)
+        getUserDataRealTime(currentUser!!.uid)
 
         contacts.setOnClickListener {
             if (checkContactsPermission()) {
@@ -56,12 +56,6 @@ class Home : AppCompatActivity() {
             val intent = Intent(this, Profile::class.java)
             startActivity(intent)
         }
-    }
-
-    override fun onResume() {
-        val currentUser = auth.currentUser
-        getCurrentUserInfo(currentUser!!.uid)
-        super.onResume()
     }
 
     private fun checkNetworkConnection() {
@@ -125,26 +119,34 @@ class Home : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getCurrentUserInfo(uid: String) {
+    private fun getUserDataRealTime(uid: String) {
         val db = FirebaseFirestore.getInstance()
         val docRef = db.collection("users").document(uid)
 
-        docRef.get()
-            .addOnSuccessListener { documentSnapshot ->
-                user = documentSnapshot.toObject<User>()!!
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                progressDialogActivity.dismissProgressDialog()
+                Log.w(TAG, "Listen failed.", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+
+                user = snapshot.toObject<User>()!!
 
                 val firstName = getFirstWord(user.username)
                 greeting.text = "Hello $firstName,"
-
                 setProfilePicture(user.profilePicture)
 
                 progressDialogActivity.dismissProgressDialog()
-                Log.d(TAG, "DocumentSnapshot data: ${documentSnapshot.data}")
-            }
-            .addOnFailureListener { exception ->
+                Log.d(TAG, "Current data: ${snapshot.data}")
+            } else {
                 progressDialogActivity.dismissProgressDialog()
-                Log.d(TAG, "Get failed with ", exception)
+                Log.d(TAG, "Current data: null")
+                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
             }
+        }
     }
 
     private fun setProfilePicture(profilePicture: String) {

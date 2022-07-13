@@ -1,14 +1,14 @@
 package com.blackeyedghoul.cochat
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import com.blackeyedghoul.cochat.models.User
@@ -49,17 +49,24 @@ class Profile : AppCompatActivity() {
 
         checkNetworkConnection()
         progressDialogActivity.showProgressDialog(this)
-        getCurrentUserInfo(currentUser!!.uid)
+        getUserDataRealTime(currentUser!!.uid)
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun getCurrentUserInfo(uid: String) {
+    private fun getUserDataRealTime(uid: String) {
         val db = FirebaseFirestore.getInstance()
         val docRef = db.collection("users").document(uid)
 
-        docRef.get()
-            .addOnSuccessListener { documentSnapshot ->
-                user = documentSnapshot.toObject<User>()!!
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                progressDialogActivity.dismissProgressDialog()
+                Log.w(TAG, "Listen failed.", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+
+                user = snapshot.toObject<User>()!!
 
                 username.text = user.username
                 bio.text = user.bio
@@ -67,12 +74,14 @@ class Profile : AppCompatActivity() {
                 setProfilePicture(user.profilePicture)
 
                 progressDialogActivity.dismissProgressDialog()
-                Log.d(ContentValues.TAG, "DocumentSnapshot data: ${documentSnapshot.data}")
-            }
-            .addOnFailureListener { exception ->
+
+                Log.d(TAG, "Current data: ${snapshot.data}")
+            } else {
                 progressDialogActivity.dismissProgressDialog()
-                Log.d(ContentValues.TAG, "Get failed with ", exception)
+                Log.d(TAG, "Current data: null")
+                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
             }
+        }
     }
 
     private fun init() {
@@ -147,10 +156,10 @@ class Profile : AppCompatActivity() {
             builder.setView(view)
 
             if (isConnected) {
-                Log.d(ContentValues.TAG, "NetworkConnection: true")
+                Log.d(TAG, "NetworkConnection: true")
                 alertDialog?.dismiss()
             } else {
-                Log.d(ContentValues.TAG, "NetworkConnection: false")
+                Log.d(TAG, "NetworkConnection: false")
                 alertDialog = builder.create()
                 alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
                 alertDialog!!.show()
