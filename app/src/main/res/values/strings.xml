@@ -29,4 +29,7 @@
     <string name="cp_done">Done</string>
     <string name="cu_header_name">Change username</string>
     <string name="cu_name_txt_hint">*Maximum length is 20 characters</string>
+    <string name="cb_header_name">Change bio</string>
+    <string name="cb_bio_txt">Your bio</string>
+    <string name="cb_bio_txt_hint">*Maximum length is 70 characters</string>
 </resources>

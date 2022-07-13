@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="40dp"
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/cb_back"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:scaleType="fitXY"
+        android:src="@drawable/back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/cb_header_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="15dp"
+        android:fontFamily="@font/cottorway_bold"
+        android:text="@string/cb_header_name"
+        android:textAlignment="center"
+        android:textColor="@color/primary_text"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="@+id/cb_back"
+        app:layout_constraintStart_toEndOf="@+id/cb_back"
+        app:layout_constraintTop_toTopOf="@+id/cb_back" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/cb_bio_txt_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        app:boxBackgroundColor="#EEEEEE"
+        app:boxBackgroundMode="filled"
+        app:boxCornerRadiusBottomEnd="30dp"
+        app:boxCornerRadiusBottomStart="30dp"
+        app:boxCornerRadiusTopEnd="30dp"
+        app:boxCornerRadiusTopStart="30dp"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:hintAnimationEnabled="false"
+        app:hintEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_header_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/cb_bio_txt"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cottorway_medium"
+            android:hint="@string/cb_bio_txt"
+            android:inputType="textMultiLine"
+            android:lines="5"
+            android:gravity="top|start"
+            android:scrollHorizontally="false"
+            android:maxLength="70"
+            android:paddingVertical="17dp"
+            android:textColor="@color/primary_text"
+            android:textColorHint="@color/secondary_text"
+            android:textSize="17sp"
+            android:focusedByDefault="true"
+            android:selectAllOnFocus="true"
+            tools:ignore="TouchTargetSizeCheck,TextContrastCheck"
+            tools:targetApi="o" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/cb_bio_txt_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/cottorway_medium"
+        android:singleLine="true"
+        android:text="@string/cb_bio_txt_hint"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@+id/cb_bio_txt_field"
+        app:layout_constraintTop_toBottomOf="@+id/cb_bio_txt_field" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cb_done"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_bg_proceed_disable"
+        android:clickable="false"
+        android:focusable="false"
+        android:fontFamily="@font/cottorway_medium"
+        android:foreground="@drawable/btn_proceed_ripple"
+        android:padding="12dp"
+        android:text="@string/cp_done"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="17sp"
+        app:backgroundTintMode="screen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_bio_txt_hint"
+        tools:ignore="TextContrastCheck" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

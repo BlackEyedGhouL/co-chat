@@ -21,11 +21,12 @@
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_contacts.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_home.xml" value="0.20277777777777778" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_main.xml" value="0.18981481481481483" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_profile.xml" value="0.20185185185185187" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_profile.xml" value="0.17777777777777778" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_profile_picture.xml" value="0.21342592592592594" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_user_name.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_verify_otp.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_welcome_screen.xml" value="0.22592592592592592" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/change_bio_sheet.xml" value="0.17777777777777778" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/change_profile_picture_sheet.xml" value="0.21481481481481482" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/change_username_sheet.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/contacts_user_card.xml" value="0.264" />

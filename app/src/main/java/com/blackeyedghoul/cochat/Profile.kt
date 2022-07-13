@@ -32,6 +32,7 @@ class Profile : AppCompatActivity() {
     private lateinit var editUsername: ConstraintLayout
     private lateinit var editBio: ConstraintLayout
     private lateinit var changeUsernameSheet: ChangeUsernameSheet
+    private lateinit var changeBioSheet: ChangeBioSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +54,10 @@ class Profile : AppCompatActivity() {
 
         editUsername.setOnClickListener{
             changeUsernameSheet.show(supportFragmentManager, "ChangeUsernameSheet")
+        }
+
+        editBio.setOnClickListener{
+            changeBioSheet.show(supportFragmentManager, "ChangeBioSheet")
         }
 
         back.setOnClickListener{
@@ -81,6 +86,7 @@ class Profile : AppCompatActivity() {
                 phoneNumber.text = user.phoneNumber
                 setProfilePicture(user.profilePicture)
                 changeUsernameSheet = ChangeUsernameSheet(user.username)
+                changeBioSheet = ChangeBioSheet(user.bio)
 
                 progressDialogActivity.dismissProgressDialog()
 
