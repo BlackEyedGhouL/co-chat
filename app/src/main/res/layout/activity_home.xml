@@ -67,7 +67,7 @@
         app:layout_constraintTop_toTopOf="@+id/h_edit"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
-    <SearchView
+    <android.widget.SearchView
         android:id="@+id/h_search_view"
         android:theme="@style/SearchView"
         android:layout_width="match_parent"
