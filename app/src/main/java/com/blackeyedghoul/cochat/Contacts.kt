@@ -7,8 +7,10 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.ContactsContract.PhoneLookup
 import android.util.Log
 import android.view.View
 import android.widget.*
@@ -64,7 +66,10 @@ class Contacts : AppCompatActivity() {
                     R.id.c_menu_invite -> {
                         val intent = Intent()
                         intent.action = Intent.ACTION_SEND
-                        intent.putExtra(Intent.EXTRA_TEXT, "Hey \uD83D\uDC4B\uD83C\uDFFC wanna try out CoChat? It's a simple, fast app we can use to chat. Get it at https://github.com/BlackEyedGhouL/co-chat")
+                        intent.putExtra(
+                            Intent.EXTRA_TEXT,
+                            "Hey \uD83D\uDC4B\uD83C\uDFFC wanna try out CoChat? It's a simple, fast app we can use to chat. Get it at https://github.com/BlackEyedGhouL/co-chat"
+                        )
                         intent.type = "text/plain"
 
                         startActivity(Intent.createChooser(intent, "Share"))
@@ -160,7 +165,7 @@ class Contacts : AppCompatActivity() {
                 alertDialog!!.show()
 
                 val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
-                dismiss?.setOnClickListener{
+                dismiss?.setOnClickListener {
                     alertDialog?.dismiss()
                 }
             }
@@ -257,12 +262,20 @@ class Contacts : AppCompatActivity() {
                     if (doc.type == DocumentChange.Type.ADDED) {
                         val user: User = doc.document.toObject(User::class.java)
                         val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
-                        if (contactExists(this, tempPhoneNumber) || contactExists(
-                                this,
-                                user.phoneNumber
-                            )
-                        )
+                        val method1: Boolean = contactExists(this, tempPhoneNumber)
+                        val method2: Boolean = contactExists(this, user.phoneNumber)
+                        if (method1 || method2) {
+                            var name: String = user.username
+                            if (method1) {
+                                name = getContactName(this, tempPhoneNumber)!!
+                            } else if (method2) {
+                                name = getContactName(this, user.phoneNumber)!!
+                            } else if (method1 && method2) {
+                                name = getContactName(this, tempPhoneNumber)!!
+                            }
+                            user.username = name
                             usersArrayList.add(user)
+                        }
                     }
                 }
 
@@ -278,6 +291,22 @@ class Contacts : AppCompatActivity() {
 
                 progressDialogActivity.dismissProgressDialog()
             }
+    }
+
+    @SuppressLint("Range")
+    fun getContactName(context: Context, phoneNumber: String?): String? {
+        val cr = context.contentResolver
+        val uri = Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber))
+        val cursor = cr.query(uri, arrayOf(PhoneLookup.DISPLAY_NAME), null, null, null)
+            ?: return null
+        var contactName: String? = null
+        if (cursor.moveToFirst()) {
+            contactName = cursor.getString(cursor.getColumnIndex(PhoneLookup.DISPLAY_NAME))
+        }
+        if (!cursor.isClosed) {
+            cursor.close()
+        }
+        return contactName
     }
 
     @SuppressLint("Range", "Recycle")
