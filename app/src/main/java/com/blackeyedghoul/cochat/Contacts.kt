@@ -40,7 +40,7 @@ class Contacts : AppCompatActivity() {
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var search: SearchView
     private lateinit var contactList: ArrayList<Contact>
-    private lateinit var inviteContactList: ArrayList<Contact>
+    private lateinit var alreadyUsersList: ArrayList<Contact>
     private lateinit var noResults: TextView
     private lateinit var inviteToChat: TextView
     private var alertDialog: AlertDialog? = null
@@ -53,7 +53,7 @@ class Contacts : AppCompatActivity() {
         init()
 
         contactsAdapter = ContactsAdapter(displayUsersArrayList, this)
-        inviteContactsAdapter = InviteContactsAdapter(inviteContactList, this)
+        inviteContactsAdapter = InviteContactsAdapter(contactList, this)
         recyclerViewContacts.adapter = contactsAdapter
         recyclerViewInvite.adapter = inviteContactsAdapter
         progressDialogActivity.showProgressDialog(this)
@@ -202,8 +202,6 @@ class Contacts : AppCompatActivity() {
                     if (!mobileNoSet.contains(number)) {
                         contactList.add(Contact(name, number))
                         mobileNoSet.add(number)
-                        Log.d(TAG, "Phone Number: Name = $name || Number = $number")
-
                         userExists(name, number)
                     }
                 }
@@ -215,7 +213,6 @@ class Contacts : AppCompatActivity() {
     private fun userExists(name: String?, number: String) {
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
-            .orderBy("username", Query.Direction.ASCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     Log.d(TAG, "Get failed with ", error)
@@ -227,22 +224,11 @@ class Contacts : AppCompatActivity() {
                         val user: User = doc.document.toObject(User::class.java)
                         val contact = Contact(name!!, number)
 
-                        if (!inviteContactList.contains(contact)) {
-                            if (user.phoneNumber.substring(0, 2) == "+94") {
-                                val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
-                                if (number != tempPhoneNumber && number != user.phoneNumber) {
-                                    inviteContactList.add(contact)
-                                }
-                            } else {
-                                if (number != user.phoneNumber) {
-                                    inviteContactList.add(contact)
-                                }
-                            }
-                            Log.d(TAG, "Invite : Name = $name || Number = $number")
+                        if (user.phoneNumber == contact.phoneNumber || convertPhoneNumber( user.phoneNumber) == contact.phoneNumber) {
+                            contactList.remove(contact)
                         }
                     }
                 }
-
                 inviteContactsAdapter.notifyDataSetChanged()
             }
     }
@@ -344,7 +330,7 @@ class Contacts : AppCompatActivity() {
         usersArrayList = arrayListOf()
         displayUsersArrayList = arrayListOf()
         contactList = arrayListOf()
-        inviteContactList = arrayListOf()
+        alreadyUsersList = arrayListOf()
         noResults = findViewById(R.id.c_no_results_text)
         inviteToChat = findViewById(R.id.c_invite_text)
     }
