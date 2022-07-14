@@ -144,6 +144,13 @@ class Contacts : AppCompatActivity() {
         })
     }
 
+    override fun onStart() {
+        super.onStart()
+        contactList.clear()
+        displayUsersArrayList.clear()
+        usersArrayList.clear()
+    }
+
     private fun checkNetworkConnection() {
         val networkConnection = InternetConnection(this)
         networkConnection.observe(this) { isConnected ->
@@ -265,8 +272,9 @@ class Contacts : AppCompatActivity() {
                     }
                 }
 
+                val sortedList = usersArrayList.sortedBy { it.username }.toCollection(ArrayList())
+                displayUsersArrayList.addAll(sortedList)
                 contactsAdapter.notifyDataSetChanged()
-                displayUsersArrayList.addAll(usersArrayList)
 
                 if (contactsAdapter.itemCount == 0) {
                     noResults.text = "No contacts found"
