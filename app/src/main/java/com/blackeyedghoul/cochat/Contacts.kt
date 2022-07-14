@@ -56,7 +56,7 @@ class Contacts : AppCompatActivity() {
         inviteContactsAdapter = InviteContactsAdapter(contactList, this)
         recyclerViewContacts.adapter = contactsAdapter
         recyclerViewInvite.adapter = inviteContactsAdapter
-        progressDialogActivity.showProgressDialog(this)
+
         checkNetworkConnection()
 
         menu.setOnClickListener {
@@ -159,6 +159,8 @@ class Contacts : AppCompatActivity() {
             val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
             builder.setView(view)
 
+            progressDialogActivity.showProgressDialog(this)
+
             if (isConnected) {
                 Log.d(TAG, "NetworkConnection: true")
                 alertDialog?.dismiss()
@@ -231,7 +233,7 @@ class Contacts : AppCompatActivity() {
                         val user: User = doc.document.toObject(User::class.java)
                         val contact = Contact(name!!, number)
 
-                        if (user.phoneNumber == contact.phoneNumber || convertPhoneNumber( user.phoneNumber) == contact.phoneNumber) {
+                        if (user.phoneNumber == contact.phoneNumber || convertPhoneNumber(user.phoneNumber) == contact.phoneNumber) {
                             contactList.remove(contact)
                         }
                     }
@@ -240,7 +242,7 @@ class Contacts : AppCompatActivity() {
             }
     }
 
-    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "NewApi")
     private fun fetchUsers() {
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
@@ -269,11 +271,33 @@ class Contacts : AppCompatActivity() {
                             user.username = name
                             usersArrayList.add(user)
                         }
+                    } else if (doc.type == DocumentChange.Type.MODIFIED) {
+                        val user: User = doc.document.toObject(User::class.java)
+                        val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
+                        val method1: Boolean = contactExists(this, tempPhoneNumber)
+                        val method2: Boolean = contactExists(this, user.phoneNumber)
+                        if (method1 || method2) {
+                            var name: String = user.username
+                            if (method1) {
+                                name = getContactName(this, tempPhoneNumber)!!
+                            } else if (method2) {
+                                name = getContactName(this, user.phoneNumber)!!
+                            } else if (method1 && method2) {
+                                name = getContactName(this, tempPhoneNumber)!!
+                            }
+                            user.username = name
+
+                            usersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
+                            displayUsersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
+
+                            usersArrayList.add(user)
+                        }
                     }
                 }
 
                 val sortedList = usersArrayList.sortedBy { it.username }.toCollection(ArrayList())
                 displayUsersArrayList.addAll(sortedList)
+                usersArrayList.clear()
                 contactsAdapter.notifyDataSetChanged()
 
                 if (contactsAdapter.itemCount == 0) {
