@@ -9,13 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.blackeyedghoul.cochat.Chats
+import com.blackeyedghoul.cochat.Chat
 import com.blackeyedghoul.cochat.R
 import com.blackeyedghoul.cochat.models.User
 
 class ContactsAdapter(
     private val usersList: ArrayList<User>,
-    private val context: Context
+    private val context: Context,
+    private val sender: User
 ): RecyclerView.Adapter<ContactsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -83,21 +84,14 @@ class ContactsAdapter(
         holder.itemView.setOnClickListener{
             val gUser = usersList[position]
 
-            val intent = Intent(context, Chats::class.java)
-            intent.putExtra("USER", gUser)
+            val intent = Intent(context, Chat::class.java)
+            intent.putExtra("RECEIVER", gUser)
+            intent.putExtra("SENDER", sender)
             context.startActivity(intent)
             (context as Activity).finish()
         }
 
-        holder.profilePicture.setOnClickListener{
-            val gUser = usersList[position]
-            val gUid: String = gUser.uid
-
-            val intent = Intent(context, Chats::class.java)
-            intent.putExtra("UID", gUid)
-            context.startActivity(intent)
-            (context as Activity).finish()
-        }
+        holder.profilePicture.setOnClickListener{}
     }
 
     override fun getItemCount(): Int {

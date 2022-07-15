@@ -44,6 +44,7 @@ class Contacts : AppCompatActivity() {
     private lateinit var noResults: TextView
     private lateinit var inviteToChat: TextView
     private var alertDialog: AlertDialog? = null
+    private lateinit var sender: User
 
     @SuppressLint("DiscouragedPrivateApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +53,9 @@ class Contacts : AppCompatActivity() {
 
         init()
 
-        contactsAdapter = ContactsAdapter(displayUsersArrayList, this)
+        sender = intent.getParcelableExtra("SENDER")!!
+
+        contactsAdapter = ContactsAdapter(displayUsersArrayList, this, sender)
         inviteContactsAdapter = InviteContactsAdapter(contactList, this)
         recyclerViewContacts.adapter = contactsAdapter
         recyclerViewInvite.adapter = inviteContactsAdapter

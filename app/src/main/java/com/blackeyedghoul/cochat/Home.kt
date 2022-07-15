@@ -46,6 +46,7 @@ class Home : AppCompatActivity() {
         contacts.setOnClickListener {
             if (checkContactsPermission()) {
                 val intent = Intent(this, Contacts::class.java)
+                intent.putExtra("SENDER", user)
                 startActivity(intent)
             } else {
                 requestContactsPermission()
@@ -105,6 +106,7 @@ class Home : AppCompatActivity() {
         if (requestCode == contactPermissionCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 val intent = Intent(this, Contacts::class.java)
+                intent.putExtra("SENDER", user)
                 startActivity(intent)
             } else {
                 Toast.makeText(applicationContext, "Required permission denied", Toast.LENGTH_SHORT).show()

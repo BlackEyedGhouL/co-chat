@@ -13,6 +13,6 @@ data class User(
     var bio: String = "",
     var uid: String = "",
     @field:JvmField
-    val isOnline: Boolean = false,
-    var rooms: List<String> = listOf(),
+    var isOnline: Boolean = false,
+    var rooms: List<String>? = null,
 ): Parcelable

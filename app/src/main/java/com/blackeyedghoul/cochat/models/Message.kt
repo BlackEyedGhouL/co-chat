@@ -2,7 +2,7 @@ package com.blackeyedghoul.cochat.models
 
 import com.google.firebase.Timestamp
 
-data class Chat(
+data class Message(
     var id: String = "",
     var senderUid: String = "",
     var receiverUid: String = "",
