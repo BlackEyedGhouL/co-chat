@@ -13,8 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoChat">
         <activity
-            android:name=".Chat"
-            android:exported="false" />
+            android:name=".Chats"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Profile"
             android:exported="true">

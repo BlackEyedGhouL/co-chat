@@ -10,9 +10,10 @@
 
     <color name="primary_color">#FF407BFF</color>
     <color name="secondary_color">#FFAEC8FE</color>
-    <color name="primary_text">#212121</color>
-    <color name="secondary_text">#757575</color>
-    <color name="error_color">#F6404F</color>
+    <color name="primary_text">#FF212121</color>
+    <color name="secondary_text">#FF757575</color>
+    <color name="error_color">#FFF6404F</color>
+    <color name="chat_background">#FFEEEFEF</color>
 
     <color name="mtrl_textinput_default_box_stroke_color">#FFFFFFFF</color>
 </resources>

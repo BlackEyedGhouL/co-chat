@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.blackeyedghoul.cochat.Chat
+import com.blackeyedghoul.cochat.Chats
 import com.blackeyedghoul.cochat.R
 import com.blackeyedghoul.cochat.models.User
 
@@ -82,10 +82,9 @@ class ContactsAdapter(
 
         holder.itemView.setOnClickListener{
             val gUser = usersList[position]
-            val gUid: String = gUser.uid
 
-            val intent = Intent(context, Chat::class.java)
-            intent.putExtra("UID", gUid)
+            val intent = Intent(context, Chats::class.java)
+            intent.putExtra("USER", gUser)
             context.startActivity(intent)
             (context as Activity).finish()
         }
@@ -94,7 +93,7 @@ class ContactsAdapter(
             val gUser = usersList[position]
             val gUid: String = gUser.uid
 
-            val intent = Intent(context, Chat::class.java)
+            val intent = Intent(context, Chats::class.java)
             intent.putExtra("UID", gUid)
             context.startActivity(intent)
             (context as Activity).finish()
