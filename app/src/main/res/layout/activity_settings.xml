@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FAF9F6"
+    tools:context=".Settings">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/s_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:elevation="16dp"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/s_back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY"
+            android:src="@drawable/back"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/s_header_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/cottorway_bold"
+            android:text="@string/s_header_name"
+            android:textAlignment="center"
+            android:textColor="@color/primary_text"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="@+id/s_back"
+            app:layout_constraintStart_toEndOf="@+id/s_back"
+            app:layout_constraintTop_toTopOf="@+id/s_back" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/s_notifications_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:alpha="0.8"
+        android:background="@drawable/layout_bg_settings"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_header">
+
+        <ImageView
+            android:id="@+id/s_notifications_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/push_notifications"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/s_notifications_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/cottorway_medium"
+            android:text="@string/s_notifications_text"
+            android:textAlignment="center"
+            android:textColor="@color/primary_text"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/s_notifications_icon"
+            app:layout_constraintStart_toEndOf="@+id/s_notifications_icon"
+            app:layout_constraintTop_toTopOf="@+id/s_notifications_icon" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/s_notifications_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:thumbTint="@color/primary_color"
+            app:trackTint="@color/secondary_color" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/s_chat_background_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:alpha="0.8"
+        android:background="@drawable/layout_bg_settings"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/btn_layout_settings_ripple"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="19dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_notifications_card">
+
+        <ImageView
+            android:id="@+id/s_chat_background_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/chat_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/s_chat_background_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/cottorway_medium"
+            android:text="@string/s_chat_background_text"
+            android:textAlignment="center"
+            android:textColor="@color/primary_text"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/s_chat_background_icon"
+            app:layout_constraintStart_toEndOf="@+id/s_chat_background_icon"
+            app:layout_constraintTop_toTopOf="@+id/s_chat_background_icon" />
+
+        <ImageView
+            android:id="@+id/s_chat_background_proceed"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/forward"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/s_support_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:alpha="0.8"
+        android:background="@drawable/layout_bg_settings"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/btn_layout_settings_ripple"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="19dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_chat_background_card">
+
+        <ImageView
+            android:id="@+id/s_support_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/help"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/s_support_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/cottorway_medium"
+            android:text="@string/s_support_text"
+            android:textAlignment="center"
+            android:textColor="@color/primary_text"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/s_support_icon"
+            app:layout_constraintStart_toEndOf="@+id/s_support_icon"
+            app:layout_constraintTop_toTopOf="@+id/s_support_icon" />
+
+        <ImageView
+            android:id="@+id/s_support_proceed"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/forward"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/s_log_out_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="20dp"
+        android:alpha="0.8"
+        android:background="@drawable/layout_bg_settings"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/btn_layout_settings_ripple"
+        android:paddingHorizontal="15dp"
+        android:paddingVertical="19dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/s_support_card">
+
+        <ImageView
+            android:id="@+id/s_log_out_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/log_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/s_log_out_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/cottorway_medium"
+            android:text="@string/s_log_out_text"
+            android:textAlignment="center"
+            android:textColor="@color/error_color"
+            android:textSize="17sp"
+            app:layout_constraintBottom_toBottomOf="@+id/s_log_out_icon"
+            app:layout_constraintStart_toEndOf="@+id/s_log_out_icon"
+            app:layout_constraintTop_toTopOf="@+id/s_log_out_icon"
+            tools:ignore="TextContrastCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
