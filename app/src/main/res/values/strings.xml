@@ -33,4 +33,11 @@
     <string name="cb_bio_txt">Your bio</string>
     <string name="cb_bio_txt_hint">*Maximum length is 70 characters</string>
     <string name="ch_message_txt">Message</string>
+    <string name="s_header_name">Settings</string>
+    <string name="s_notifications_text">Push notifications</string>
+    <string name="s_chat_background_text">Chat background</string>
+    <string name="s_support_text">Support</string>
+    <string name="s_log_out_text">Log out</string>
+    <string name="c_back_header_name">Chat background</string>
+    <string name="c_back_choose_text">Pick a background image</string>
 </resources>

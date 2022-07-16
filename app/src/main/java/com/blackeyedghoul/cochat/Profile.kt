@@ -2,6 +2,7 @@ package com.blackeyedghoul.cochat
 
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -25,6 +26,7 @@ class Profile : AppCompatActivity() {
     private lateinit var bio: TextView
     private lateinit var profilePicture: ImageView
     private lateinit var back: ImageView
+    private lateinit var settings: ImageView
     private lateinit var edit: CardView
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var auth: FirebaseAuth
@@ -62,6 +64,11 @@ class Profile : AppCompatActivity() {
 
         back.setOnClickListener{
             onBackPressed()
+        }
+
+        settings.setOnClickListener{
+            val intent = Intent(this, Settings::class.java)
+            startActivity(intent)
         }
     }
 
@@ -109,6 +116,7 @@ class Profile : AppCompatActivity() {
         progressDialogActivity = WelcomeScreen()
         editUsername = findViewById(R.id.p_username_card)
         editBio = findViewById(R.id.p_bio_card)
+        settings = findViewById(R.id.p_settings)
     }
 
     private fun setProfilePicture(number: String) {

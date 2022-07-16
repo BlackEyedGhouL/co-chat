@@ -95,7 +95,6 @@ class Settings : AppCompatActivity() {
             }
 
             if (snapshot != null && snapshot.exists()) {
-
                 configuration = snapshot.toObject<com.blackeyedghoul.cochat.models.Configuration>()!!
 
                 notificationSwitch.isChecked = configuration.isPushNotificationEnabled

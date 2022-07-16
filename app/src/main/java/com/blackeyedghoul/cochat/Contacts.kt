@@ -20,6 +20,7 @@ import com.blackeyedghoul.cochat.adapters.ContactsAdapter
 import com.blackeyedghoul.cochat.adapters.InviteContactsAdapter
 import com.blackeyedghoul.cochat.models.Contact
 import com.blackeyedghoul.cochat.models.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -45,6 +46,7 @@ class Contacts : AppCompatActivity() {
     private lateinit var inviteToChat: TextView
     private var alertDialog: AlertDialog? = null
     private lateinit var sender: User
+    private lateinit var auth: FirebaseAuth
 
     @SuppressLint("DiscouragedPrivateApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -247,6 +249,9 @@ class Contacts : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "NewApi")
     private fun fetchUsers() {
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
             .orderBy("username", Query.Direction.ASCENDING)
@@ -272,7 +277,9 @@ class Contacts : AppCompatActivity() {
                                 name = getContactName(this, tempPhoneNumber)!!
                             }
                             user.username = name
-                            usersArrayList.add(user)
+
+                            if (currentUser!!.phoneNumber != user.phoneNumber && currentUser.phoneNumber != tempPhoneNumber)
+                                usersArrayList.add(user)
                         }
                     } else if (doc.type == DocumentChange.Type.MODIFIED) {
                         val user: User = doc.document.toObject(User::class.java)
@@ -293,7 +300,8 @@ class Contacts : AppCompatActivity() {
                             usersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
                             displayUsersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
 
-                            usersArrayList.add(user)
+                            if (currentUser!!.phoneNumber != user.phoneNumber && currentUser.phoneNumber != tempPhoneNumber)
+                                usersArrayList.add(user)
                         }
                     }
                 }

@@ -15,7 +15,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.blackeyedghoul.cochat.models.User
+import com.blackeyedghoul.cochat.observer.Observer
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 
@@ -41,7 +43,7 @@ class Home : AppCompatActivity() {
         init()
         checkNetworkConnection()
         progressDialogActivity.showProgressDialog(this)
-        getUserDataRealTime(currentUser!!.uid)
+        getUserDataRealTime(currentUser)
 
         contacts.setOnClickListener {
             if (checkContactsPermission()) {
@@ -121,9 +123,9 @@ class Home : AppCompatActivity() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getUserDataRealTime(uid: String) {
+    private fun getUserDataRealTime(currentUser: FirebaseUser?) {
         val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("users").document(uid)
+        val docRef = db.collection("users").document(currentUser!!.uid)
 
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
@@ -140,6 +142,8 @@ class Home : AppCompatActivity() {
                 val firstName = getFirstWord(user.username)
                 greeting.text = "Hello $firstName,"
                 setProfilePicture(user.profilePicture)
+
+                lifecycle.addObserver(Observer(user))
 
                 progressDialogActivity.dismissProgressDialog()
                 Log.d(TAG, "Current data: ${snapshot.data}")

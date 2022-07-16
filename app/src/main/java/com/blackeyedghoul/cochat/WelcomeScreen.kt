@@ -57,31 +57,28 @@ class WelcomeScreen : AppCompatActivity() {
 
         indicator.setViewPager(viewPager2)
 
-        // Show and hide keyboard
         window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
             window.decorView.getWindowVisibleDisplayFrame(r)
 
             val height = window.decorView.height
             if (height - r.bottom > height * 0.1399) {
-                viewPager2.alpha = 0.0f // Visible
+                viewPager2.alpha = 0.0f
                 indicator.alpha = 0.0f
             } else {
-                viewPager2.alpha = 1.0f // Invisible
+                viewPager2.alpha = 1.0f
                 indicator.alpha = 1.0f
             }
         }
 
         phoneNumber.addTextChangedListener(signTextWatcher)
 
-        // Check the current user whether he logged in already
         val currentUser = auth.currentUser
         if (currentUser != null) {
             startActivity(Intent(applicationContext, Home::class.java))
             finish()
         }
 
-        // Callback function for Phone Auth
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {

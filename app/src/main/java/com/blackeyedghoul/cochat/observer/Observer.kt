@@ -10,21 +10,24 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.blackeyedghoul.cochat.models.User
 import com.google.firebase.firestore.FirebaseFirestore
 
-class Observer(private val sender: User): LifecycleObserver {
+class Observer(private val currentUser: User): LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onEnteredForeground() {
-        updateStatus(true)
+        if (!currentUser.isOnline)
+            updateStatus(true)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onEnteredBackground() {
-        updateStatus(false)
+        if (currentUser.isOnline) {
+            updateStatus(false)
+        }
     }
 
     private fun updateStatus(status: Boolean) {
         val db = FirebaseFirestore.getInstance()
-        db.collection("users").document(sender.uid)
+        db.collection("users").document(currentUser.uid)
             .update(
                 "isOnline", status
             )

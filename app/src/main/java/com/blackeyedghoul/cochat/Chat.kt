@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.models.Message
 import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
-import com.blackeyedghoul.cochat.observer.Observer
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,6 +41,8 @@ class Chat : AppCompatActivity() {
     private lateinit var profilePicture: ImageView
     private val db = FirebaseFirestore.getInstance()
     private lateinit var progressDialogActivity: WelcomeScreen
+    private lateinit var chatBackground: ImageView
+    private lateinit var configuration: com.blackeyedghoul.cochat.models.Configuration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,16 +59,67 @@ class Chat : AppCompatActivity() {
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
         receiver = intent.getParcelableExtra("RECEIVER")!!
         sender = intent.getParcelableExtra("SENDER")!!
-        name.text = receiver.username
-        setProfilePicture()
 
-        setStatus()
         checkNetworkConnection()
-        lifecycle.addObserver(Observer(sender))
 
         progressDialogActivity.showProgressDialog(this)
+        name.text = receiver.username
+        setProfilePicture()
+        setStatus()
+        setChatBackground()
+
         doesRoomExist()
-        progressDialogActivity.dismissProgressDialog()
+    }
+
+    @SuppressLint("ResourceAsColor")
+    private fun setChatBackground() {
+        val docRef = db.collection("settings").document(sender.uid)
+
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                configuration = snapshot.toObject<com.blackeyedghoul.cochat.models.Configuration>()!!
+
+                when (configuration.chatBackground) {
+                    "01" -> {
+                        chatBackground.setImageDrawable(null)
+                    }
+                    "02" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_2)
+                    }
+                    "03" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_3)
+                    }
+                    "04" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_4)
+                    }
+                    "05" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_5)
+                    }
+                    "06" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_6)
+                    }
+                    "07" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_7)
+                    }
+                    "08" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_8)
+                    }
+                    "09" -> {
+                        chatBackground.setImageResource(R.drawable.chat_background_9)
+                    }
+                }
+
+                Log.d(TAG, "Current data: ${snapshot.data}")
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -238,6 +290,7 @@ class Chat : AppCompatActivity() {
                     }
             }
         }
+        progressDialogActivity.dismissProgressDialog()
     }
 
     @SuppressLint("SetTextI18n")
@@ -284,9 +337,7 @@ class Chat : AppCompatActivity() {
     }
 
     private fun addRoomToUsers(id: String, user: User) {
-
         val oldRoomList = user.rooms
-
         val newRoomList: List<String> = if (oldRoomList.isNullOrEmpty()) {
             listOf(id)
         } else {
@@ -370,6 +421,7 @@ class Chat : AppCompatActivity() {
         send = findViewById(R.id.ch_send_card)
         progressDialogActivity = WelcomeScreen()
         profilePicture = findViewById(R.id.ch_profile_picture)
+        chatBackground = findViewById(R.id.ch_background)
     }
 
     private fun checkNetworkConnection() {
