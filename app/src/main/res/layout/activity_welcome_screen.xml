@@ -42,23 +42,12 @@
         android:id="@+id/wl_view_pager"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        app:layout_constraintBottom_toTopOf="@+id/wl_indicator"
+        app:layout_constraintBottom_toTopOf="@+id/wl_round_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wl_app_name"
         app:layout_constraintVertical_chainStyle="packed" />
-
-    <me.relex.circleindicator.CircleIndicator3
-        android:id="@+id/wl_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        app:ci_drawable="@drawable/indicator_round"
-        app:layout_constraintBottom_toTopOf="@+id/wl_round_card"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wl_view_pager"/>
 
     <com.github.captain_miao.optroundcardview.OptRoundCardView
         android:id="@+id/wl_round_card"

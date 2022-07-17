@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -26,13 +27,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import me.relex.circleindicator.CircleIndicator3
 import java.util.concurrent.TimeUnit
 
 class WelcomeScreen : AppCompatActivity() {
 
     private lateinit var viewPager2: ViewPager2
-    private lateinit var indicator: CircleIndicator3
     private lateinit var next: CardView
     private lateinit var phoneNumber: TextInputEditText
     private lateinit var auth: FirebaseAuth
@@ -41,6 +40,7 @@ class WelcomeScreen : AppCompatActivity() {
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     private lateinit var progressDialog: ProgressDialog
     private var alertDialog: AlertDialog? = null
+    private val sliderHandler: Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +52,16 @@ class WelcomeScreen : AppCompatActivity() {
 
         val images =
             listOf(R.drawable.welcome_pic_1, R.drawable.welcome_pic_2, R.drawable.welcome_pic_3)
-        val adapter = ViewPagerAdapter(images)
+        val adapter = ViewPagerAdapter(images, viewPager2)
         viewPager2.adapter = adapter
 
-        indicator.setViewPager(viewPager2)
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                sliderHandler.removeCallbacks(sliderRunnable)
+                sliderHandler.postDelayed(sliderRunnable, 3000)
+            }
+        })
 
         window.decorView.viewTreeObserver.addOnGlobalLayoutListener {
             val r = Rect()
@@ -64,10 +70,8 @@ class WelcomeScreen : AppCompatActivity() {
             val height = window.decorView.height
             if (height - r.bottom > height * 0.1399) {
                 viewPager2.alpha = 0.0f
-                indicator.alpha = 0.0f
             } else {
                 viewPager2.alpha = 1.0f
-                indicator.alpha = 1.0f
             }
         }
 
@@ -118,6 +122,8 @@ class WelcomeScreen : AppCompatActivity() {
 
         checkNetworkConnection()
     }
+
+    private var sliderRunnable = Runnable { viewPager2.currentItem = viewPager2.currentItem + 1 }
 
     private var signTextWatcher = object : TextWatcher {
         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -191,9 +197,18 @@ class WelcomeScreen : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
     private fun init() {
         viewPager2 = findViewById(R.id.wl_view_pager)
-        indicator = findViewById(R.id.wl_indicator)
         next = findViewById(R.id.wl_next_card)
         phoneNumber = findViewById(R.id.wl_phone_number_txt)
     }

@@ -42,12 +42,6 @@ class Settings : AppCompatActivity() {
 
         }
 
-        chatBackground.setOnClickListener{
-            val intent = Intent(this, ChatBackground::class.java)
-            intent.putExtra("CHAT_BACKGROUND", configuration.chatBackground)
-            startActivity(intent)
-        }
-
         logOut.setOnClickListener{
             auth.signOut()
             val intent = Intent(this, WelcomeScreen::class.java)
@@ -118,6 +112,13 @@ class Settings : AppCompatActivity() {
 
             if (isConnected) {
                 Log.d(ContentValues.TAG, "NetworkConnection: true")
+
+                chatBackground.setOnClickListener{
+                    val intent = Intent(this, ChatBackground::class.java)
+                    intent.putExtra("CHAT_BACKGROUND", configuration.chatBackground)
+                    startActivity(intent)
+                }
+
                 alertDialog?.dismiss()
             } else {
                 Log.d(ContentValues.TAG, "NetworkConnection: false")
@@ -128,6 +129,10 @@ class Settings : AppCompatActivity() {
                 val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
                 dismiss?.setOnClickListener{
                     alertDialog?.dismiss()
+                }
+
+                chatBackground.setOnClickListener{
+                    Toast.makeText(applicationContext, "Please try again when there's an active internet connection", Toast.LENGTH_SHORT).show()
                 }
             }
         }

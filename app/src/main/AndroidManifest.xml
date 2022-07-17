@@ -14,7 +14,11 @@
         android:theme="@style/Theme.CoChat">
         <activity
             android:name=".ChatBackground"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".Settings"
             android:exported="true">

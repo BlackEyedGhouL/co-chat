@@ -6,6 +6,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -21,14 +22,13 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
-import me.relex.circleindicator.CircleIndicator3
 import java.util.concurrent.TimeUnit
 
+@Suppress("DEPRECATION")
 class VerifyOtp : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var viewPager2: ViewPager2
-    private lateinit var indicator: CircleIndicator3
     private lateinit var subtitle: TextView
     private lateinit var resend: TextView
     private var isOnVerificationCompleted: Boolean = false
@@ -39,6 +39,7 @@ class VerifyOtp : AppCompatActivity() {
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
     private lateinit var callbacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
     private var alertDialog: AlertDialog? = null
+    private val sliderHandler: Handler = Handler()
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,23 +51,26 @@ class VerifyOtp : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         val images = listOf(R.drawable.welcome_pic_1, R.drawable.welcome_pic_2, R.drawable.welcome_pic_3)
-        val adapter = ViewPagerAdapter(images)
+        val adapter = ViewPagerAdapter(images, viewPager2)
         viewPager2.adapter = adapter
 
-        indicator.setViewPager(viewPager2)
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                sliderHandler.removeCallbacks(sliderRunnable)
+                sliderHandler.postDelayed(sliderRunnable, 1500)
+            }
+        })
 
-        // Show and hide keyboard
         window.decorView.viewTreeObserver.addOnGlobalLayoutListener{
             val r = Rect()
             window.decorView.getWindowVisibleDisplayFrame(r)
 
             val height =window.decorView.height
             if(height - r.bottom>height*0.1399){
-                viewPager2.alpha = 0.0f // Visible
-                indicator.alpha = 0.0f
+                viewPager2.alpha = 0.0f
             }else{
-                viewPager2.alpha = 1.0f // Invisible
-                indicator.alpha = 1.0f
+                viewPager2.alpha = 1.0f
             }
         }
 
@@ -91,7 +95,6 @@ class VerifyOtp : AppCompatActivity() {
             signInWithPhoneAuthCredential(credential)
         }
 
-        // Callback function for Phone Auth
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
@@ -192,9 +195,20 @@ class VerifyOtp : AppCompatActivity() {
         }
     }
 
+    private var sliderRunnable = Runnable { viewPager2.currentItem = viewPager2.currentItem + 1 }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.removeCallbacks(sliderRunnable)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 1500)
+    }
+
     private fun init() {
         viewPager2 = findViewById(R.id.vo_view_pager)
-        indicator = findViewById(R.id.vo_indicator)
         subtitle = findViewById(R.id.vo_subtitle)
         pinView = findViewById(R.id.vo_pin_view)
         progressDialogActivity = WelcomeScreen()
