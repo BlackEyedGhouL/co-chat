@@ -43,10 +43,7 @@ class Settings : AppCompatActivity() {
         }
 
         logOut.setOnClickListener{
-            auth.signOut()
-            val intent = Intent(this, WelcomeScreen::class.java)
-            startActivity(intent)
-            finishAffinity()
+            updateStatus()
         }
 
         back.setOnClickListener {
@@ -60,6 +57,26 @@ class Settings : AppCompatActivity() {
         notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
             updatePushNotifications(currentUser.uid, isChecked)
         }
+    }
+
+    private fun updateStatus() {
+        val db = FirebaseFirestore.getInstance()
+        db.collection("users").document(auth.currentUser!!.uid)
+            .update(
+                "isOnline", false
+            )
+            .addOnSuccessListener {
+                Log.d(ContentValues.TAG, "DocumentSnapshot successfully written!")
+                auth.signOut()
+                val intent = Intent(this, WelcomeScreen::class.java)
+                startActivity(intent)
+                finishAffinity()
+            }
+            .addOnFailureListener { e ->
+                Log.w(ContentValues.TAG, "Error writing document", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addOnFailureListener
+            }
     }
 
     private fun updatePushNotifications(uid: String, isChecked: Boolean) {

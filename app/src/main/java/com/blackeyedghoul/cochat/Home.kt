@@ -14,14 +14,14 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleObserver
 import com.blackeyedghoul.cochat.models.User
-import com.blackeyedghoul.cochat.observer.Observer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 
-class Home : AppCompatActivity() {
+class Home : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var user: User
@@ -143,7 +143,7 @@ class Home : AppCompatActivity() {
                 greeting.text = "Hello $firstName,"
                 setProfilePicture(user.profilePicture)
 
-                lifecycle.addObserver(Observer(user))
+                //lifecycle.addObserver(Observer(user))
 
                 progressDialogActivity.dismissProgressDialog()
                 Log.d(TAG, "Current data: ${snapshot.data}")
