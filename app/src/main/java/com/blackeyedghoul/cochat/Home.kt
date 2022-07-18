@@ -15,40 +15,50 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
+import androidx.recyclerview.widget.RecyclerView
+import com.blackeyedghoul.cochat.adapters.MessagesAdapter
+import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 
 class Home : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var user: User
+    private lateinit var sender: User
+    private lateinit var room: Room
+    private lateinit var receiver: User
+    private lateinit var receiversArrayList: ArrayList<User>
     private lateinit var contacts: ImageView
     private lateinit var profile: ImageView
     private lateinit var search: SearchView
     private lateinit var greeting: TextView
     private lateinit var progressDialogActivity: WelcomeScreen
     private val contactPermissionCode = 1
+    private lateinit var contactsActivity: Contacts
     private var alertDialog: AlertDialog? = null
+    val db = FirebaseFirestore.getInstance()
+    private lateinit var messagesRecyclerView: RecyclerView
+    private lateinit var messagesArrayList: ArrayList<Room>
+    private lateinit var messagesAdapter: MessagesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
         auth = FirebaseAuth.getInstance()
-        val currentUser = auth.currentUser
 
         init()
-        checkNetworkConnection()
         progressDialogActivity.showProgressDialog(this)
-        getUserDataRealTime(currentUser)
+        checkNetworkConnection()
+
+        // getUserDataRealTime(currentUser)
 
         contacts.setOnClickListener {
             if (checkContactsPermission()) {
                 val intent = Intent(this, Contacts::class.java)
-                intent.putExtra("SENDER", user)
+                intent.putExtra("SENDER", sender)
                 startActivity(intent)
             } else {
                 requestContactsPermission()
@@ -64,7 +74,6 @@ class Home : AppCompatActivity(), LifecycleObserver {
     private fun checkNetworkConnection() {
         val networkConnection = InternetConnection(this)
         networkConnection.observe(this) { isConnected ->
-
             val view = View.inflate(this, R.layout.no_internet_alert, null)
             val builder = AlertDialog.Builder(this, R.style.FullscreenAlertDialog)
             builder.setView(view)
@@ -72,6 +81,38 @@ class Home : AppCompatActivity(), LifecycleObserver {
             if (isConnected) {
                 Log.d(TAG, "NetworkConnection: true")
                 alertDialog?.dismiss()
+
+                fetchSender(object: FetchSenderCallback {
+                    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+                    override fun onCallback(user: User) {
+                        val firstName = getFirstWord(sender.username)
+                        greeting.text = "Hello $firstName,"
+                        setProfilePicture(sender.profilePicture)
+
+                        messagesAdapter = MessagesAdapter(messagesArrayList, this@Home, sender, receiversArrayList)
+                        messagesRecyclerView.adapter = messagesAdapter
+
+                        user.rooms!!.forEach { roomId ->
+
+                            fetchRooms(roomId, object: FetchRoomsCallback {
+                                override fun onCallback(room: Room) {
+                                    messagesArrayList.add(room)
+
+                                    fetchReceiver(room, object: FetchReceiverCallback {
+                                        override fun onCallback(receiver: User) {
+                                            receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
+                                            receiversArrayList.add(receiver)
+
+                                            messagesAdapter.notifyDataSetChanged()
+                                            Log.e(TAG, "Current data: \n|${messagesArrayList.size} \n|$sender \n|${receiversArrayList.size}")
+                                        }
+                                    })
+                                }
+                            })
+                        }
+                        progressDialogActivity.dismissProgressDialog()
+                    }
+                })
             } else {
                 Log.d(TAG, "NetworkConnection: false")
                 alertDialog = builder.create()
@@ -79,7 +120,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
                 alertDialog!!.show()
 
                 val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button
-                dismiss?.setOnClickListener{
+                dismiss?.setOnClickListener {
                     alertDialog?.dismiss()
                 }
             }
@@ -108,10 +149,11 @@ class Home : AppCompatActivity(), LifecycleObserver {
         if (requestCode == contactPermissionCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 val intent = Intent(this, Contacts::class.java)
-                intent.putExtra("SENDER", user)
+                intent.putExtra("SENDER", sender)
                 startActivity(intent)
             } else {
-                Toast.makeText(applicationContext, "Required permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Required permission denied", Toast.LENGTH_SHORT)
+                    .show()
 
                 val intent = Intent()
                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
@@ -122,37 +164,78 @@ class Home : AppCompatActivity(), LifecycleObserver {
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun getUserDataRealTime(currentUser: FirebaseUser?) {
-        val db = FirebaseFirestore.getInstance()
-        val docRef = db.collection("users").document(currentUser!!.uid)
-
+    private fun fetchSender(fetchSenderCallback: FetchSenderCallback) {
+        val docRef = db.collection("users").document(auth.currentUser!!.uid)
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-                progressDialogActivity.dismissProgressDialog()
                 Log.w(TAG, "Listen failed.", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
 
             if (snapshot != null && snapshot.exists()) {
-
-                user = snapshot.toObject<User>()!!
-
-                val firstName = getFirstWord(user.username)
-                greeting.text = "Hello $firstName,"
-                setProfilePicture(user.profilePicture)
-
-                //lifecycle.addObserver(Observer(user))
-
-                progressDialogActivity.dismissProgressDialog()
-                Log.d(TAG, "Current data: ${snapshot.data}")
+                sender = snapshot.toObject<User>()!!
+                fetchSenderCallback.onCallback(sender)
             } else {
-                progressDialogActivity.dismissProgressDialog()
                 Log.d(TAG, "Current data: null")
                 Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun fetchRooms(roomId: String, fetchRoomsCallback: FetchRoomsCallback) {
+        val docRef = db.collection("rooms").document(roomId)
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                room = snapshot.toObject<Room>()!!
+                fetchRoomsCallback.onCallback(room)
+            } else {
+                Log.d(TAG, "Current data: null")
+                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun fetchReceiver(room: Room, fetchReceiverCallback: FetchReceiverCallback) {
+        room.members.forEach { userId ->
+            if (userId != sender.uid) {
+                val docRef = db.collection("users").document(userId)
+                docRef.addSnapshotListener { snapshot, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                        return@addSnapshotListener
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+
+                        receiver = snapshot.toObject<User>()!!
+                        fetchReceiverCallback.onCallback(receiver)
+                    } else {
+                        Log.d(TAG, "Current data: null")
+                        Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    interface FetchSenderCallback {
+        fun onCallback(user: User)
+    }
+
+    interface FetchReceiverCallback {
+        fun onCallback(receiver: User)
+    }
+
+    interface FetchRoomsCallback {
+        fun onCallback(room: Room)
     }
 
     private fun setProfilePicture(profilePicture: String) {
@@ -222,6 +305,10 @@ class Home : AppCompatActivity(), LifecycleObserver {
         search = findViewById(R.id.h_search_view)
         greeting = findViewById(R.id.h_greeting)
         progressDialogActivity = WelcomeScreen()
+        messagesArrayList = arrayListOf()
+        receiversArrayList = arrayListOf()
+        contactsActivity = Contacts()
+        messagesRecyclerView = findViewById(R.id.h_recycler_view)
     }
 
     override fun onBackPressed() {

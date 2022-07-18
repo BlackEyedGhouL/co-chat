@@ -186,7 +186,7 @@ class WelcomeScreen : AppCompatActivity() {
             } else {
                 Log.d(TAG, "NetworkConnection: false")
                 alertDialog = builder.create()
-                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.white)
                 alertDialog!!.show()
 
                 val dismiss = alertDialog!!.findViewById(R.id.ni_dismiss) as? Button

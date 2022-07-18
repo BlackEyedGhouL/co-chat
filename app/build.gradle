@@ -50,6 +50,5 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
     implementation 'com.github.GoodieBag:Pinview:v1.4'
     implementation 'com.airbnb.android:lottie:4.1.0'
-
     implementation "android.arch.lifecycle:extensions:1.1.1"
 }

@@ -29,7 +29,7 @@
     </style>
 
     <style name="PopupMenu">
-        <item name="android:popupBackground">#FAF9F6</item>
+        <item name="android:popupBackground">@color/primary_background_color</item>
         <item name="fontFamily">@font/cottorway_medium</item>
     </style>
 
