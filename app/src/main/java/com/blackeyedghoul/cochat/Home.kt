@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import java.util.*
 
 class Home : AppCompatActivity(), LifecycleObserver {
 
@@ -42,6 +43,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
     private lateinit var messagesAdapter: MessagesAdapter
     private lateinit var conversationsArrayList: ArrayList<Conversation>
     private lateinit var searchConversationsArrayList: ArrayList<Conversation>
+    private lateinit var noResults: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +73,58 @@ class Home : AppCompatActivity(), LifecycleObserver {
             val intent = Intent(this, Profile::class.java)
             startActivity(intent)
         }
+
+        search.setOnClickListener {
+            search.isIconified = false
+        }
+
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return true
+            }
+
+            @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                if (newText!!.isNotEmpty()) {
+                    searchConversationsArrayList.clear()
+                    val search = newText.lowercase(Locale.getDefault())
+                    conversationsArrayList.forEach {
+                        if (it.receiver.username.lowercase(Locale.getDefault()).contains(search)) {
+                            searchConversationsArrayList.add(it)
+                        }
+                    }
+
+                    messagesRecyclerView.adapter!!.notifyDataSetChanged()
+                } else {
+                    searchConversationsArrayList.clear()
+                    searchConversationsArrayList.addAll(conversationsArrayList)
+                    messagesRecyclerView.adapter!!.notifyDataSetChanged()
+                }
+
+                if (messagesAdapter.itemCount == 0) {
+
+                    if (newText.isNotEmpty()) {
+                        noResults.text = "No results found for '$newText'"
+                        noResults.visibility = View.VISIBLE
+                    }
+                    else {
+                        noResults.visibility = View.GONE
+                        checkNetworkConnection()
+                    }
+                } else {
+                    noResults.visibility = View.GONE
+                }
+
+                return true
+            }
+        })
+    }
+
+    override fun onStart() {
+        super.onStart()
+        searchConversationsArrayList.clear()
+        conversationsArrayList.clear()
     }
 
     private fun checkNetworkConnection() {
@@ -120,7 +174,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
                                 }
 
                                 Log.e(TAG, "Conversations: ${conversationsArrayList.size}")
-                                val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(java.util.ArrayList())
+                                val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(ArrayList())
                                 searchConversationsArrayList.addAll(sortedList)
                                 conversationsArrayList.clear()
                                 messagesAdapter.notifyDataSetChanged()
@@ -325,80 +379,10 @@ class Home : AppCompatActivity(), LifecycleObserver {
         messagesRecyclerView = findViewById(R.id.h_recycler_view)
         conversationsArrayList = arrayListOf()
         searchConversationsArrayList = arrayListOf()
+        noResults = findViewById(R.id.h_no_results_text)
     }
 
     override fun onBackPressed() {
         finishAffinity()
     }
 }
-
-//user.rooms!!.forEach { roomId ->
-//
-//    fetchRooms(roomId, object: Home.FetchRoomsCallback {
-//        override fun onCallback(room: Room) {
-//
-//            fetchReceiver(room, object: Home.FetchReceiverCallback {
-//                override fun onCallback(receiver: User) {
-//                    receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
-//
-//                    conversationsArrayList.add(Conversation(room, sender, receiver))
-//                    messagesAdapter.notifyDataSetChanged()
-//                    fetchFirebaseDataCallback.onCallback(conversationsArrayList)
-//                }
-//            })
-//        }
-//    })
-//}
-
-//                progressDialogActivity.dismissProgressDialog()
-//                val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(java.util.ArrayList())
-//                searchConversationsArrayList.addAll(sortedList)
-//                conversationsArrayList.clear()
-//                Log.e(TAG, "Current data: ${conversationsArrayList.size} | ${searchConversationsArrayList.size}")
-
-//    private fun fetchRooms(roomId: String, fetchRoomsCallback: FetchRoomsCallback) {
-//        val docRef = db.collection("rooms").document(roomId)
-//        docRef.addSnapshotListener { snapshot, e ->
-//            if (e != null) {
-//                Log.w(TAG, "Listen failed.", e)
-//                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
-//                return@addSnapshotListener
-//            }
-//
-//            if (snapshot != null && snapshot.exists()) {
-//                room = snapshot.toObject<Room>()!!
-//                fetchRoomsCallback.onCallback(room)
-//            } else {
-//                Log.d(TAG, "Current data: null")
-//                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-
-//    fun fetchReceiver(room: Room, fetchReceiverCallback: FetchReceiverCallback) {
-//        room.members.forEach { userId ->
-//            if (userId != sender.uid) {
-//                val docRef = db.collection("users").document(userId)
-//                docRef.addSnapshotListener { snapshot, e ->
-//                    if (e != null) {
-//                        Log.w(TAG, "Listen failed.", e)
-//                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
-//                        return@addSnapshotListener
-//                    }
-//
-//                    if (snapshot != null && snapshot.exists()) {
-//
-//                        receiver = snapshot.toObject<User>()!!
-//                        fetchReceiverCallback.onCallback(receiver)
-//                    } else {
-//                        Log.d(TAG, "Current data: null")
-//                        Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    interface FetchReceiverCallback {
-//        fun onCallback(receiver: User)
-//    }

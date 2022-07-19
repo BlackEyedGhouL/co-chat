@@ -134,12 +134,14 @@ class Contacts : AppCompatActivity() {
 
                 if (contactsAdapter.itemCount == 0) {
 
-                    if (newText.isNotEmpty())
+                    if (newText.isNotEmpty()) {
                         noResults.text = "No results found for '$newText'"
-                    else
-                        noResults.text = "No contacts found"
-
-                    noResults.visibility = View.VISIBLE
+                        noResults.visibility = View.VISIBLE
+                    }
+                    else {
+                        noResults.visibility = View.GONE
+                        checkNetworkConnection()
+                    }
                 } else {
                     noResults.visibility = View.GONE
                 }

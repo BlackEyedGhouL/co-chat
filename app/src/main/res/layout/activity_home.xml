@@ -8,6 +8,23 @@
     tools:context=".Home">
 
     <TextView
+        android:id="@+id/h_no_results_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/cottorway_medium"
+        android:text=""
+        android:textAlignment="center"
+        android:textColor="@color/secondary_text"
+        android:textSize="17sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/h_recycler_view" />
+
+    <TextView
         android:id="@+id/h_greeting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
