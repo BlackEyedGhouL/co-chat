@@ -35,7 +35,8 @@ class Contacts : AppCompatActivity() {
     private lateinit var recyclerViewContacts: RecyclerView
     private lateinit var recyclerViewInvite: RecyclerView
     private lateinit var usersArrayList: ArrayList<User>
-    private lateinit var displayUsersArrayList: ArrayList<User>
+    private lateinit var backupUsersArrayList: ArrayList<User>
+    private lateinit var searchUsersArrayList: ArrayList<User>
     private lateinit var contactsAdapter: ContactsAdapter
     private lateinit var inviteContactsAdapter: InviteContactsAdapter
     private lateinit var progressDialogActivity: WelcomeScreen
@@ -57,7 +58,7 @@ class Contacts : AppCompatActivity() {
 
         sender = intent.getParcelableExtra("SENDER")!!
 
-        contactsAdapter = ContactsAdapter(displayUsersArrayList, this, sender)
+        contactsAdapter = ContactsAdapter(searchUsersArrayList, this, sender)
         inviteContactsAdapter = InviteContactsAdapter(contactList, this)
         recyclerViewContacts.adapter = contactsAdapter
         recyclerViewInvite.adapter = inviteContactsAdapter
@@ -117,31 +118,29 @@ class Contacts : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 if (newText!!.isNotEmpty()) {
-                    displayUsersArrayList.clear()
+                    searchUsersArrayList.clear()
                     val search = newText.lowercase(Locale.getDefault())
-                    usersArrayList.forEach {
+                    backupUsersArrayList.forEach {
                         if (it.username.lowercase(Locale.getDefault()).contains(search)) {
-                            displayUsersArrayList.add(it)
+                            searchUsersArrayList.add(it)
                         }
                     }
 
                     recyclerViewContacts.adapter!!.notifyDataSetChanged()
                 } else {
-                    displayUsersArrayList.clear()
-                    displayUsersArrayList.addAll(usersArrayList)
+                    searchUsersArrayList.clear()
+                    searchUsersArrayList.addAll(backupUsersArrayList)
                     recyclerViewContacts.adapter!!.notifyDataSetChanged()
                 }
 
                 if (contactsAdapter.itemCount == 0) {
 
-                    if (newText.isNotEmpty()) {
+                    if (newText.isNotEmpty())
                         noResults.text = "No results found for '$newText'"
-                        noResults.visibility = View.VISIBLE
-                    }
-                    else {
-                        noResults.visibility = View.GONE
-                        checkNetworkConnection()
-                    }
+                    else
+                        noResults.text = "No contacts found"
+
+                    noResults.visibility = View.VISIBLE
                 } else {
                     noResults.visibility = View.GONE
                 }
@@ -154,7 +153,7 @@ class Contacts : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         contactList.clear()
-        displayUsersArrayList.clear()
+        searchUsersArrayList.clear()
         usersArrayList.clear()
     }
 
@@ -300,7 +299,7 @@ class Contacts : AppCompatActivity() {
                             user.username = name
 
                             usersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
-                            displayUsersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
+                            searchUsersArrayList.removeIf { it.phoneNumber == user.phoneNumber }
 
                             if (currentUser!!.phoneNumber != user.phoneNumber && currentUser.phoneNumber != tempPhoneNumber)
                                 usersArrayList.add(user)
@@ -309,7 +308,8 @@ class Contacts : AppCompatActivity() {
                 }
 
                 val sortedList = usersArrayList.sortedBy { it.username }.toCollection(ArrayList())
-                displayUsersArrayList.addAll(sortedList)
+                searchUsersArrayList.addAll(sortedList)
+                backupUsersArrayList.addAll(sortedList)
                 usersArrayList.clear()
                 contactsAdapter.notifyDataSetChanged()
 
@@ -373,9 +373,10 @@ class Contacts : AppCompatActivity() {
         recyclerViewInvite = findViewById(R.id.c_invite_recycler_view)
         progressDialogActivity = WelcomeScreen()
         usersArrayList = arrayListOf()
-        displayUsersArrayList = arrayListOf()
+        searchUsersArrayList = arrayListOf()
         contactList = arrayListOf()
         alreadyUsersList = arrayListOf()
+        backupUsersArrayList = arrayListOf()
         noResults = findViewById(R.id.c_no_results_text)
         inviteToChat = findViewById(R.id.c_invite_text)
     }

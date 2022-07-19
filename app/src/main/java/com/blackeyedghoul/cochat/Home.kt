@@ -42,6 +42,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
     private lateinit var messagesRecyclerView: RecyclerView
     private lateinit var messagesAdapter: MessagesAdapter
     private lateinit var conversationsArrayList: ArrayList<Conversation>
+    private lateinit var backupConversationsArrayList: ArrayList<Conversation>
     private lateinit var searchConversationsArrayList: ArrayList<Conversation>
     private lateinit var noResults: TextView
 
@@ -89,7 +90,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
                 if (newText!!.isNotEmpty()) {
                     searchConversationsArrayList.clear()
                     val search = newText.lowercase(Locale.getDefault())
-                    conversationsArrayList.forEach {
+                    backupConversationsArrayList.forEach {
                         if (it.receiver.username.lowercase(Locale.getDefault()).contains(search)) {
                             searchConversationsArrayList.add(it)
                         }
@@ -98,20 +99,18 @@ class Home : AppCompatActivity(), LifecycleObserver {
                     messagesRecyclerView.adapter!!.notifyDataSetChanged()
                 } else {
                     searchConversationsArrayList.clear()
-                    searchConversationsArrayList.addAll(conversationsArrayList)
+                    searchConversationsArrayList.addAll(backupConversationsArrayList)
                     messagesRecyclerView.adapter!!.notifyDataSetChanged()
                 }
 
                 if (messagesAdapter.itemCount == 0) {
 
-                    if (newText.isNotEmpty()) {
+                    if (newText.isNotEmpty())
                         noResults.text = "No results found for '$newText'"
-                        noResults.visibility = View.VISIBLE
-                    }
-                    else {
-                        noResults.visibility = View.GONE
-                        checkNetworkConnection()
-                    }
+                    else
+                        noResults.text = "No contacts found"
+
+                    noResults.visibility = View.VISIBLE
                 } else {
                     noResults.visibility = View.GONE
                 }
@@ -176,6 +175,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
                                 Log.e(TAG, "Conversations: ${conversationsArrayList.size}")
                                 val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(ArrayList())
                                 searchConversationsArrayList.addAll(sortedList)
+                                backupConversationsArrayList.addAll(sortedList)
                                 conversationsArrayList.clear()
                                 messagesAdapter.notifyDataSetChanged()
                                 progressDialogActivity.dismissProgressDialog()
@@ -379,6 +379,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
         messagesRecyclerView = findViewById(R.id.h_recycler_view)
         conversationsArrayList = arrayListOf()
         searchConversationsArrayList = arrayListOf()
+        backupConversationsArrayList = arrayListOf()
         noResults = findViewById(R.id.h_no_results_text)
     }
 
