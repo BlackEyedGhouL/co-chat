@@ -12,15 +12,14 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.Chat
 import com.blackeyedghoul.cochat.R
+import com.blackeyedghoul.cochat.models.Conversation
 import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
 import java.text.SimpleDateFormat
 
 class MessagesAdapter(
-    private val messagesList: ArrayList<Room>,
-    private val context: Context,
-    private val sender: User,
-    private val receiversList: ArrayList<User>
+    private val conversationsList: ArrayList<Conversation>,
+    private val context: Context
 ): RecyclerView.Adapter<MessagesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -31,8 +30,9 @@ class MessagesAdapter(
 
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val message: Room = messagesList[position]
-        val receiver: User = receiversList[position]
+        val message: Room = conversationsList[position].room
+        val receiver: User = conversationsList[position].receiver
+        val sender: User = conversationsList[position].sender
         holder.fullName.text = receiver.username
         holder.message.text = message.lastMessage
 
@@ -112,7 +112,7 @@ class MessagesAdapter(
     }
 
     override fun getItemCount(): Int {
-        return messagesList.size
+        return conversationsList.size
     }
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {

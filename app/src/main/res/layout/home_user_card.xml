@@ -4,7 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="@drawable/home_user_card_ripple"
+    android:background="@drawable/bg_home_user_card">
 
     <ImageView
         android:id="@+id/h_user_card_profile_picture"

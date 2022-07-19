@@ -17,9 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.MessagesAdapter
+import com.blackeyedghoul.cochat.models.Conversation
 import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 
@@ -27,9 +29,6 @@ class Home : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var sender: User
-    private lateinit var room: Room
-    private lateinit var receiver: User
-    private lateinit var receiversArrayList: ArrayList<User>
     private lateinit var contacts: ImageView
     private lateinit var profile: ImageView
     private lateinit var search: SearchView
@@ -40,8 +39,9 @@ class Home : AppCompatActivity(), LifecycleObserver {
     private var alertDialog: AlertDialog? = null
     val db = FirebaseFirestore.getInstance()
     private lateinit var messagesRecyclerView: RecyclerView
-    private lateinit var messagesArrayList: ArrayList<Room>
     private lateinit var messagesAdapter: MessagesAdapter
+    private lateinit var conversationsArrayList: ArrayList<Conversation>
+    private lateinit var searchConversationsArrayList: ArrayList<Conversation>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,10 +50,12 @@ class Home : AppCompatActivity(), LifecycleObserver {
         auth = FirebaseAuth.getInstance()
 
         init()
+
         progressDialogActivity.showProgressDialog(this)
         checkNetworkConnection()
 
-        // getUserDataRealTime(currentUser)
+        messagesAdapter = MessagesAdapter(searchConversationsArrayList, this@Home)
+        messagesRecyclerView.adapter = messagesAdapter
 
         contacts.setOnClickListener {
             if (checkContactsPermission()) {
@@ -83,36 +85,51 @@ class Home : AppCompatActivity(), LifecycleObserver {
                 alertDialog?.dismiss()
 
                 fetchSender(object: FetchSenderCallback {
-                    @SuppressLint("SetTextI18n", "NotifyDataSetChanged")
+                    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
                     override fun onCallback(user: User) {
                         val firstName = getFirstWord(sender.username)
                         greeting.text = "Hello $firstName,"
                         setProfilePicture(sender.profilePicture)
-
-                        messagesAdapter = MessagesAdapter(messagesArrayList, this@Home, sender, receiversArrayList)
-                        messagesRecyclerView.adapter = messagesAdapter
-
-                        user.rooms!!.forEach { roomId ->
-
-                            fetchRooms(roomId, object: FetchRoomsCallback {
-                                override fun onCallback(room: Room) {
-                                    messagesArrayList.add(room)
-
-                                    fetchReceiver(room, object: FetchReceiverCallback {
-                                        override fun onCallback(receiver: User) {
-                                            receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
-                                            receiversArrayList.add(receiver)
-
-                                            messagesAdapter.notifyDataSetChanged()
-                                            Log.e(TAG, "Current data: \n|${messagesArrayList.size} \n|$sender \n|${receiversArrayList.size}")
-                                        }
-                                    })
-                                }
-                            })
-                        }
-                        progressDialogActivity.dismissProgressDialog()
                     }
                 })
+
+                fetchReceivers(object: FetchReceiversCallback {
+                    override fun onCallback(users: ArrayList<User>) {
+
+                        fetchRooms(object: FetchRoomsCallback {
+                            @SuppressLint("NotifyDataSetChanged")
+                            override fun onCallback(rooms: ArrayList<Room>) {
+
+                                rooms.forEach { room ->
+                                    val receiverUid: String = if (room.members[0] == auth.currentUser!!.uid) {
+                                        room.members[1]
+                                    } else {
+                                        room.members[0]
+                                    }
+
+                                    users.forEach { receiver ->
+                                        if (receiver.uid == receiverUid) {
+                                            receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
+
+                                            conversationsArrayList.removeIf { it.room.id == room.id }
+                                            searchConversationsArrayList.removeIf { it.room.id == room.id }
+
+                                            conversationsArrayList.add(Conversation(room, sender, receiver))
+                                        }
+                                    }
+                                }
+
+                                Log.e(TAG, "Conversations: ${conversationsArrayList.size}")
+                                val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(java.util.ArrayList())
+                                searchConversationsArrayList.addAll(sortedList)
+                                conversationsArrayList.clear()
+                                messagesAdapter.notifyDataSetChanged()
+                                progressDialogActivity.dismissProgressDialog()
+                            }
+                        })
+                    }
+                })
+
             } else {
                 Log.d(TAG, "NetworkConnection: false")
                 alertDialog = builder.create()
@@ -125,6 +142,79 @@ class Home : AppCompatActivity(), LifecycleObserver {
                 }
             }
         }
+    }
+
+    private fun fetchReceivers(fetchReceiversCallback: FetchReceiversCallback) {
+        db.collection("users")
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.d(TAG, "Get failed with ", error)
+                }
+
+                val usersArrayList: ArrayList<User> = arrayListOf()
+
+                for (doc: DocumentChange in value?.documentChanges!!) {
+                    if (doc.type == DocumentChange.Type.ADDED || doc.type == DocumentChange.Type.MODIFIED) {
+                        val user: User = doc.document.toObject(User::class.java)
+                        usersArrayList.add(user)
+                    }
+                }
+
+                fetchReceiversCallback.onCallback(usersArrayList)
+            }
+    }
+
+    private fun fetchRooms(fetchRoomsCallback: FetchRoomsCallback) {
+        db.collection("rooms")
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.d(TAG, "Get failed with ", error)
+                }
+
+                val roomsArrayList: ArrayList<Room> = arrayListOf()
+
+                for (doc: DocumentChange in value?.documentChanges!!) {
+                    if (doc.type == DocumentChange.Type.ADDED || doc.type == DocumentChange.Type.MODIFIED) {
+                        val room: Room = doc.document.toObject(Room::class.java)
+
+                        if (room.members[0] == auth.currentUser!!.uid || room.members[1] == auth.currentUser!!.uid) {
+                            roomsArrayList.add(room)
+                        }
+                    }
+                }
+
+                fetchRoomsCallback.onCallback(roomsArrayList)
+            }
+    }
+
+    private fun fetchSender(fetchSenderCallback: FetchSenderCallback) {
+        val docRef = db.collection("users").document(auth.currentUser!!.uid)
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                sender = snapshot.toObject<User>()!!
+                fetchSenderCallback.onCallback(sender)
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
+    }
+
+    interface FetchRoomsCallback {
+        fun onCallback(rooms: ArrayList<Room>)
+    }
+
+    interface FetchSenderCallback {
+        fun onCallback(user: User)
+    }
+
+    interface FetchReceiversCallback {
+        fun onCallback(users: ArrayList<User>)
     }
 
     private fun checkContactsPermission(): Boolean {
@@ -162,80 +252,6 @@ class Home : AppCompatActivity(), LifecycleObserver {
                 this.startActivity(intent)
             }
         }
-    }
-
-    private fun fetchSender(fetchSenderCallback: FetchSenderCallback) {
-        val docRef = db.collection("users").document(auth.currentUser!!.uid)
-        docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                sender = snapshot.toObject<User>()!!
-                fetchSenderCallback.onCallback(sender)
-            } else {
-                Log.d(TAG, "Current data: null")
-                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun fetchRooms(roomId: String, fetchRoomsCallback: FetchRoomsCallback) {
-        val docRef = db.collection("rooms").document(roomId)
-        docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                room = snapshot.toObject<Room>()!!
-                fetchRoomsCallback.onCallback(room)
-            } else {
-                Log.d(TAG, "Current data: null")
-                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    fun fetchReceiver(room: Room, fetchReceiverCallback: FetchReceiverCallback) {
-        room.members.forEach { userId ->
-            if (userId != sender.uid) {
-                val docRef = db.collection("users").document(userId)
-                docRef.addSnapshotListener { snapshot, e ->
-                    if (e != null) {
-                        Log.w(TAG, "Listen failed.", e)
-                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
-                        return@addSnapshotListener
-                    }
-
-                    if (snapshot != null && snapshot.exists()) {
-
-                        receiver = snapshot.toObject<User>()!!
-                        fetchReceiverCallback.onCallback(receiver)
-                    } else {
-                        Log.d(TAG, "Current data: null")
-                        Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-        }
-    }
-
-    interface FetchSenderCallback {
-        fun onCallback(user: User)
-    }
-
-    interface FetchReceiverCallback {
-        fun onCallback(receiver: User)
-    }
-
-    interface FetchRoomsCallback {
-        fun onCallback(room: Room)
     }
 
     private fun setProfilePicture(profilePicture: String) {
@@ -305,13 +321,84 @@ class Home : AppCompatActivity(), LifecycleObserver {
         search = findViewById(R.id.h_search_view)
         greeting = findViewById(R.id.h_greeting)
         progressDialogActivity = WelcomeScreen()
-        messagesArrayList = arrayListOf()
-        receiversArrayList = arrayListOf()
         contactsActivity = Contacts()
         messagesRecyclerView = findViewById(R.id.h_recycler_view)
+        conversationsArrayList = arrayListOf()
+        searchConversationsArrayList = arrayListOf()
     }
 
     override fun onBackPressed() {
         finishAffinity()
     }
 }
+
+//user.rooms!!.forEach { roomId ->
+//
+//    fetchRooms(roomId, object: Home.FetchRoomsCallback {
+//        override fun onCallback(room: Room) {
+//
+//            fetchReceiver(room, object: Home.FetchReceiverCallback {
+//                override fun onCallback(receiver: User) {
+//                    receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
+//
+//                    conversationsArrayList.add(Conversation(room, sender, receiver))
+//                    messagesAdapter.notifyDataSetChanged()
+//                    fetchFirebaseDataCallback.onCallback(conversationsArrayList)
+//                }
+//            })
+//        }
+//    })
+//}
+
+//                progressDialogActivity.dismissProgressDialog()
+//                val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(java.util.ArrayList())
+//                searchConversationsArrayList.addAll(sortedList)
+//                conversationsArrayList.clear()
+//                Log.e(TAG, "Current data: ${conversationsArrayList.size} | ${searchConversationsArrayList.size}")
+
+//    private fun fetchRooms(roomId: String, fetchRoomsCallback: FetchRoomsCallback) {
+//        val docRef = db.collection("rooms").document(roomId)
+//        docRef.addSnapshotListener { snapshot, e ->
+//            if (e != null) {
+//                Log.w(TAG, "Listen failed.", e)
+//                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+//                return@addSnapshotListener
+//            }
+//
+//            if (snapshot != null && snapshot.exists()) {
+//                room = snapshot.toObject<Room>()!!
+//                fetchRoomsCallback.onCallback(room)
+//            } else {
+//                Log.d(TAG, "Current data: null")
+//                Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+
+//    fun fetchReceiver(room: Room, fetchReceiverCallback: FetchReceiverCallback) {
+//        room.members.forEach { userId ->
+//            if (userId != sender.uid) {
+//                val docRef = db.collection("users").document(userId)
+//                docRef.addSnapshotListener { snapshot, e ->
+//                    if (e != null) {
+//                        Log.w(TAG, "Listen failed.", e)
+//                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+//                        return@addSnapshotListener
+//                    }
+//
+//                    if (snapshot != null && snapshot.exists()) {
+//
+//                        receiver = snapshot.toObject<User>()!!
+//                        fetchReceiverCallback.onCallback(receiver)
+//                    } else {
+//                        Log.d(TAG, "Current data: null")
+//                        Toast.makeText(applicationContext, "Unknown user!", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+//    interface FetchReceiverCallback {
+//        fun onCallback(receiver: User)
+//    }
