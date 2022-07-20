@@ -20,7 +20,6 @@ class Settings : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var notificationSwitch: SwitchMaterial
-    private lateinit var support: ConstraintLayout
     private lateinit var logOut: ConstraintLayout
     private lateinit var chatBackground: ConstraintLayout
     private lateinit var progressDialogActivity: WelcomeScreen
@@ -37,10 +36,6 @@ class Settings : AppCompatActivity() {
         val currentUser = auth.currentUser
 
         init()
-
-        support.setOnClickListener{
-
-        }
 
         logOut.setOnClickListener{
             updateStatus()
@@ -157,7 +152,6 @@ class Settings : AppCompatActivity() {
 
     private fun init() {
         notificationSwitch = findViewById(R.id.s_notifications_switch)
-        support = findViewById(R.id.s_support_card)
         logOut = findViewById(R.id.s_log_out_card)
         chatBackground = findViewById(R.id.s_chat_background_card)
         progressDialogActivity = WelcomeScreen()
