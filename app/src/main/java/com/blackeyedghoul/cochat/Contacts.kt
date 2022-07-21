@@ -11,10 +11,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.provider.ContactsContract.PhoneLookup
+import android.transition.AutoTransition
+import android.transition.TransitionManager
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ContactsAdapter
 import com.blackeyedghoul.cochat.adapters.InviteContactsAdapter
@@ -48,6 +52,9 @@ class Contacts : AppCompatActivity() {
     private var alertDialog: AlertDialog? = null
     private lateinit var sender: User
     private lateinit var auth: FirebaseAuth
+    private lateinit var inviteCard: CardView
+    private lateinit var inviteLayout: ConstraintLayout
+    private lateinit var expandIcon: ImageView
 
     @SuppressLint("DiscouragedPrivateApi", "SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +71,22 @@ class Contacts : AppCompatActivity() {
         recyclerViewInvite.adapter = inviteContactsAdapter
 
         checkNetworkConnection()
+
+        inviteCard.setOnClickListener{
+            TransitionManager.beginDelayedTransition(inviteLayout, AutoTransition())
+            if (recyclerViewInvite.isShown) {
+                expandIcon.setImageResource(R.drawable.forward_gray)
+                recyclerViewInvite.visibility = View.GONE
+            } else {
+                expandIcon.setImageResource(R.drawable.down_gray)
+                recyclerViewInvite.visibility = View.VISIBLE
+
+                if (contactList.isEmpty()) {
+                    progressDialogActivity.showProgressDialog(this)
+                    getContactList()
+                }
+            }
+        }
 
         menu.setOnClickListener {
             val popupMenu = PopupMenu(this, it)
@@ -170,7 +193,6 @@ class Contacts : AppCompatActivity() {
             if (isConnected) {
                 Log.d(TAG, "NetworkConnection: true")
                 alertDialog?.dismiss()
-                getContactList()
                 fetchUsers()
             } else {
                 Log.d(TAG, "NetworkConnection: false")
@@ -219,6 +241,8 @@ class Contacts : AppCompatActivity() {
                         mobileNoSet.add(number)
                         userExists(name, number)
                     }
+
+                    if (cursor.position == (cursor.count - 1)) progressDialogActivity.dismissProgressDialog()
                 }
             }
         }
@@ -379,5 +403,8 @@ class Contacts : AppCompatActivity() {
         backupUsersArrayList = arrayListOf()
         noResults = findViewById(R.id.c_no_results_text)
         inviteToChat = findViewById(R.id.c_invite_text)
+        inviteCard = findViewById(R.id.c_invite_card)
+        inviteLayout = findViewById(R.id.c_invite_layout)
+        expandIcon = findViewById(R.id.c_invite_expand_icon)
     }
 }
