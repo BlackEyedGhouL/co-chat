@@ -10,8 +10,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SwitchCompat
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -19,7 +19,7 @@ import com.google.firebase.firestore.ktx.toObject
 class Settings : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
-    private lateinit var notificationSwitch: SwitchMaterial
+    private lateinit var notificationSwitch: SwitchCompat
     private lateinit var logOut: ConstraintLayout
     private lateinit var chatBackground: ConstraintLayout
     private lateinit var progressDialogActivity: WelcomeScreen

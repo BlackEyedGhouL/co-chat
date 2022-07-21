@@ -92,13 +92,13 @@
             app:layout_constraintStart_toEndOf="@+id/s_notifications_icon"
             app:layout_constraintTop_toTopOf="@+id/s_notifications_icon" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
+        <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/s_notifications_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            app:thumbTint="@color/primary_color"
-            app:trackTint="@color/secondary_color"
+            android:thumb="@drawable/switch_thumb"
+            app:track="@drawable/switch_track"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
