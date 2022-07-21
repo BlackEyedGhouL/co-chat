@@ -7,6 +7,7 @@
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/bg_contacts_user_card.xml" value="0.1255" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/bg_home_user_card.xml" value="0.128" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/bg_invite_expand.xml" value="0.11" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/bg_log_out_layout.xml" value="0.1235" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/blue_cursor.xml" value="0.1095" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/bottom_sheet_round_corners.xml" value="0.119" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/btn_bg_proceed.xml" value="0.145" />
@@ -50,6 +51,7 @@
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/contacts_user_card.xml" value="0.264" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/home_user_card.xml" value="0.19814814814814816" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/invite_user_card.xml" value="0.18981481481481483" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/log_out_alert.xml" value="0.4" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/menu_icon.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/no_internet.xml" value="0.18981481481481483" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/no_internet_alert.xml" value="0.22592592592592592" />

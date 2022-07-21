@@ -38,7 +38,24 @@ class Settings : AppCompatActivity() {
         init()
 
         logOut.setOnClickListener{
-            updateStatus()
+
+            val view = View.inflate(this, R.layout.log_out_alert, null)
+            val builder = AlertDialog.Builder(this)
+            builder.setView(view)
+
+            alertDialog = builder.create()
+            alertDialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
+            alertDialog!!.show()
+
+            val cancel = alertDialog!!.findViewById(R.id.la_cancel) as? Button
+            cancel?.setOnClickListener{
+                alertDialog?.dismiss()
+            }
+
+            val logOut = alertDialog!!.findViewById(R.id.la_log_out) as? Button
+            logOut?.setOnClickListener{
+                updateStatus()
+            }
         }
 
         back.setOnClickListener {

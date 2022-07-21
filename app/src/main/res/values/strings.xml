@@ -40,4 +40,8 @@
     <string name="s_log_out_text">Log out</string>
     <string name="c_back_header_name">Chat background</string>
     <string name="c_back_choose_text">Pick a background image</string>
+    <string name="la_title">Log out</string>
+    <string name="la_subtitle">You will be returned to the log in screen.</string>
+    <string name="la_cancel">Cancel</string>
+    <string name="la_log_out">Log out</string>
 </resources>
