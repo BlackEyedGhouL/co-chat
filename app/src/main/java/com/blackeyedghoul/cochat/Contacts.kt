@@ -16,7 +16,6 @@ import android.transition.TransitionManager
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
@@ -32,7 +31,7 @@ import java.util.*
 
 
 @Suppress("NAME_SHADOWING")
-class Contacts : AppCompatActivity() {
+class Contacts : CheckAvailability() {
 
     private lateinit var menu: ImageView
     private lateinit var back: ImageView

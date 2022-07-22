@@ -11,7 +11,6 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
@@ -26,7 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import java.util.*
 
-class Home : AppCompatActivity(), LifecycleObserver {
+
+class Home : CheckAvailability(), LifecycleObserver {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var sender: User
@@ -108,7 +108,7 @@ class Home : AppCompatActivity(), LifecycleObserver {
                     if (newText.isNotEmpty())
                         noResults.text = "No results found for '$newText'"
                     else
-                        noResults.text = "No contacts found"
+                        noResults.text = "No messages found"
 
                     noResults.visibility = View.VISIBLE
                 } else {

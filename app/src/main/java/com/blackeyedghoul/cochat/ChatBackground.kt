@@ -8,13 +8,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-class ChatBackground : AppCompatActivity() {
+class ChatBackground : CheckAvailability() {
 
     private var alertDialog: AlertDialog? = null
     private val db = FirebaseFirestore.getInstance()
