@@ -105,6 +105,8 @@ class MessagesAdapter(
             val intent = Intent(context, Chat::class.java)
             intent.putExtra("RECEIVER", receiver)
             intent.putExtra("SENDER", sender)
+            intent.putExtra("ROOM_ID", message.id)
+            intent.putExtra("ROOM", message)
             context.startActivity(intent)
         }
 

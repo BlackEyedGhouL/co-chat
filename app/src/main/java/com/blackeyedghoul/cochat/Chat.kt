@@ -14,13 +14,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.blackeyedghoul.cochat.adapters.ChatAdapter
+import com.blackeyedghoul.cochat.models.Configuration
 import com.blackeyedghoul.cochat.models.Message
 import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 
@@ -37,12 +39,15 @@ class Chat : CheckAvailability() {
     private lateinit var receiver: User
     private lateinit var sender: User
     private lateinit var room: Room
+    private lateinit var roomId: String
     private lateinit var profilePicture: ImageView
     private val db = FirebaseFirestore.getInstance()
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var chatBackground: ImageView
-    private lateinit var configuration: com.blackeyedghoul.cochat.models.Configuration
+    private lateinit var chatAdapter: ChatAdapter
+    private lateinit var messagesArrayList: ArrayList<Message>
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
@@ -55,23 +60,74 @@ class Chat : CheckAvailability() {
 
         messageBox.addTextChangedListener(messageTextWatcher)
 
-        (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = true
         receiver = intent.getParcelableExtra("RECEIVER")!!
         sender = intent.getParcelableExtra("SENDER")!!
+        roomId = intent.getStringExtra("ROOM_ID")!!
 
         checkNetworkConnection()
-
         progressDialogActivity.showProgressDialog(this)
+
+        setChatBackground(object: FetchConfigurationCallback {
+            override fun onCallback(configs: Configuration) {
+                chatAdapter = if (configs.chatBackground == "01")
+                    ChatAdapter(messagesArrayList, sender, true)
+                else
+                    ChatAdapter(messagesArrayList, sender, false)
+
+                recyclerView.adapter = chatAdapter
+            }
+        })
+
         name.text = receiver.username
         setProfilePicture()
         setStatus()
-        setChatBackground()
 
-        doesRoomExist()
+        if (roomId == "_") {
+            doesRoomExist()
+        } else {
+            room = intent.getParcelableExtra("ROOM")!!
+            fetchMessages(room.id, object: FetchMessagesCallback {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onCallback(messages: java.util.ArrayList<Message>) {
+                    val sortedList = messages.sortedBy { it.timestamp }.toCollection(
+                        java.util.ArrayList()
+                    )
+                    messagesArrayList.addAll(sortedList)
+                    chatAdapter.notifyDataSetChanged()
+                    recyclerView.scrollToPosition(messagesArrayList.size - 1)
+                    progressDialogActivity.dismissProgressDialog()
+                }
+            })
+        }
+    }
+
+    private fun fetchMessages(roomId: String, fetchMessagesCallback: FetchMessagesCallback) {
+        db.collection("rooms").document(roomId).collection("messages")
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    Log.d(TAG, "Get failed with ", error)
+                    return@addSnapshotListener
+                }
+
+                val messageList: ArrayList<Message> = arrayListOf()
+
+                for (doc: DocumentChange in value?.documentChanges!!) {
+                    if (doc.type == DocumentChange.Type.ADDED || doc.type == DocumentChange.Type.MODIFIED) {
+                        val message: Message = doc.document.toObject(Message::class.java)
+                        messageList.add(message)
+                    }
+                }
+
+                fetchMessagesCallback.onCallback(messageList)
+            }
+    }
+
+    interface FetchMessagesCallback {
+        fun onCallback(messages: java.util.ArrayList<Message>)
     }
 
     @SuppressLint("ResourceAsColor")
-    private fun setChatBackground() {
+    private fun setChatBackground(fetchConfigurationCallback: FetchConfigurationCallback) {
         val docRef = db.collection("settings").document(sender.uid)
 
         docRef.addSnapshotListener { snapshot, e ->
@@ -81,8 +137,11 @@ class Chat : CheckAvailability() {
                 return@addSnapshotListener
             }
 
+            val configuration: Configuration
+
             if (snapshot != null && snapshot.exists()) {
-                configuration = snapshot.toObject<com.blackeyedghoul.cochat.models.Configuration>()!!
+                configuration =
+                    snapshot.toObject<Configuration>()!!
 
                 when (configuration.chatBackground) {
                     "01" -> {
@@ -113,12 +172,16 @@ class Chat : CheckAvailability() {
                         chatBackground.setImageResource(R.drawable.chat_background_9)
                     }
                 }
+                fetchConfigurationCallback.onCallback(configuration)
 
-                Log.d(TAG, "Current data: ${snapshot.data}")
             } else {
                 Log.d(TAG, "Current data: null")
             }
         }
+    }
+
+    interface FetchConfigurationCallback {
+        fun onCallback(configs: Configuration)
     }
 
     @SuppressLint("SetTextI18n")
@@ -258,6 +321,7 @@ class Chat : CheckAvailability() {
     private fun doesRoomExist() {
         if (sender.rooms.isNullOrEmpty()) {
             createRoom()
+            progressDialogActivity.dismissProgressDialog()
         } else {
             sender.rooms!!.forEach { roomId ->
                 val docRef = db.collection("rooms").document(roomId)
@@ -279,6 +343,7 @@ class Chat : CheckAvailability() {
                         } else {
                             Log.d(TAG, "Room exists: false")
                             createRoom()
+                            progressDialogActivity.dismissProgressDialog()
                         }
                     }
                     .addOnFailureListener { exception ->
@@ -289,7 +354,6 @@ class Chat : CheckAvailability() {
                     }
             }
         }
-        progressDialogActivity.dismissProgressDialog()
     }
 
     @SuppressLint("SetTextI18n")
@@ -305,6 +369,19 @@ class Chat : CheckAvailability() {
                 room = snapshot.toObject<Room>()!!
 
                 if (room.isTyping[1]) status.text = "Typing"
+
+                fetchMessages(room.id, object: FetchMessagesCallback {
+                    @SuppressLint("NotifyDataSetChanged")
+                    override fun onCallback(messages: java.util.ArrayList<Message>) {
+                        val sortedList = messages.sortedBy { it.timestamp }.toCollection(
+                            java.util.ArrayList()
+                        )
+                        messagesArrayList.addAll(sortedList)
+                        chatAdapter.notifyDataSetChanged()
+                        recyclerView.scrollToPosition(messagesArrayList.size - 1)
+                        progressDialogActivity.dismissProgressDialog()
+                    }
+                })
 
                 Log.d(TAG, "Current data: ${snapshot.data}")
             } else {
@@ -421,6 +498,7 @@ class Chat : CheckAvailability() {
         progressDialogActivity = WelcomeScreen()
         profilePicture = findViewById(R.id.ch_profile_picture)
         chatBackground = findViewById(R.id.ch_background)
+        messagesArrayList = arrayListOf()
     }
 
     private fun checkNetworkConnection() {

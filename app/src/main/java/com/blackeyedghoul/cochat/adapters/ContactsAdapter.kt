@@ -87,6 +87,7 @@ class ContactsAdapter(
             val intent = Intent(context, Chat::class.java)
             intent.putExtra("RECEIVER", gUser)
             intent.putExtra("SENDER", sender)
+            intent.putExtra("ROOM_ID", "_")
             context.startActivity(intent)
             (context as Activity).finish()
         }

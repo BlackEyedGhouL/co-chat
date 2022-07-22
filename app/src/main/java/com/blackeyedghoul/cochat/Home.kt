@@ -154,20 +154,22 @@ class Home : CheckAvailability(), LifecycleObserver {
                             override fun onCallback(rooms: ArrayList<Room>) {
 
                                 rooms.forEach { room ->
-                                    val receiverUid: String = if (room.members[0] == auth.currentUser!!.uid) {
-                                        room.members[1]
-                                    } else {
-                                        room.members[0]
-                                    }
+                                    if (room.lastMessage != "") {
+                                        val receiverUid: String = if (room.members[0] == auth.currentUser!!.uid) {
+                                            room.members[1]
+                                        } else {
+                                            room.members[0]
+                                        }
 
-                                    users.forEach { receiver ->
-                                        if (receiver.uid == receiverUid) {
-                                            receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
+                                        users.forEach { receiver ->
+                                            if (receiver.uid == receiverUid) {
+                                                receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
 
-                                            conversationsArrayList.removeIf { it.room.id == room.id }
-                                            searchConversationsArrayList.removeIf { it.room.id == room.id }
+                                                conversationsArrayList.removeIf { it.room.id == room.id }
+                                                searchConversationsArrayList.removeIf { it.room.id == room.id }
 
-                                            conversationsArrayList.add(Conversation(room, sender, receiver))
+                                                conversationsArrayList.add(Conversation(room, sender, receiver))
+                                            }
                                         }
                                     }
                                 }
@@ -203,6 +205,7 @@ class Home : CheckAvailability(), LifecycleObserver {
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     Log.d(TAG, "Get failed with ", error)
+                    return@addSnapshotListener
                 }
 
                 val usersArrayList: ArrayList<User> = arrayListOf()
@@ -223,6 +226,7 @@ class Home : CheckAvailability(), LifecycleObserver {
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     Log.d(TAG, "Get failed with ", error)
+                    return@addSnapshotListener
                 }
 
                 val roomsArrayList: ArrayList<Room> = arrayListOf()
