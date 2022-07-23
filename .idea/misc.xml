@@ -32,14 +32,14 @@
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/sent_message_bg.xml" value="0.1095" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/switch_thumb.xml" value="0.1255" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/drawable/switch_track.xml" value="0.1255" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_chat.xml" value="0.1925925925925926" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_chat.xml" value="0.19074074074074074" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_chat_background.xml" value="0.22592592592592592" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_contacts.xml" value="0.4" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_contacts.xml" value="0.20863616930312098" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_home.xml" value="0.20277777777777778" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_main.xml" value="0.18981481481481483" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_profile.xml" value="0.17777777777777778" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_settings.xml" value="0.22592592592592592" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_profile_picture.xml" value="0.21342592592592594" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_profile.xml" value="0.20863616930312098" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_settings.xml" value="0.20863616930312098" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_profile_picture.xml" value="0.19342053111375346" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_sign_up_user_name.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_verify_otp.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/activity_welcome_screen.xml" value="0.22592592592592592" />
@@ -50,13 +50,13 @@
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/chat_sent_message_box.xml" value="0.21481481481481482" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/contacts_user_card.xml" value="0.264" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/home_user_card.xml" value="0.19814814814814816" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/invite_user_card.xml" value="0.18981481481481483" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/invite_user_card.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/log_out_alert.xml" value="0.4" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/menu_icon.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/no_internet.xml" value="0.18981481481481483" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/no_internet_alert.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/progress_bar.xml" value="0.22592592592592592" />
-        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/view_pager_image_item.xml" value="0.1" />
+        <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/layout/view_pager_image_item.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/menu/chat_menu.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/menu/contacts_menu.xml" value="0.22592592592592592" />
         <entry key="..\:/Projects/Android_Studio/CoChat/app/src/main/res/menu/menu.xml" value="0.1814814814814815" />
