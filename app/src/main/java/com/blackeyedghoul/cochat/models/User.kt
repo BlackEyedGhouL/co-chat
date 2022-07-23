@@ -15,4 +15,5 @@ data class User(
     @field:JvmField
     var isOnline: Boolean = false,
     var rooms: List<String>? = null,
+    var fcmToken: String = ""
 ): Parcelable

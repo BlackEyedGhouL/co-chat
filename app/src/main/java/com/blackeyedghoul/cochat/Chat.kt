@@ -22,6 +22,7 @@ import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
@@ -29,6 +30,7 @@ import com.google.firebase.firestore.ktx.toObject
 
 class Chat : CheckAvailability() {
 
+    private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     private var alertDialog: AlertDialog? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var back: ImageView
@@ -67,7 +69,7 @@ class Chat : CheckAvailability() {
         checkNetworkConnection()
         progressDialogActivity.showProgressDialog(this)
 
-        setChatBackground(object: FetchConfigurationCallback {
+        setChatBackground(object : FetchConfigurationCallback {
             override fun onCallback(configs: Configuration) {
                 chatAdapter = if (configs.chatBackground == "01")
                     ChatAdapter(messagesArrayList, sender, true)
@@ -86,7 +88,7 @@ class Chat : CheckAvailability() {
             doesRoomExist()
         } else {
             room = intent.getParcelableExtra("ROOM")!!
-            fetchMessages(room.id, object: FetchMessagesCallback {
+            fetchMessages(room.id, object : FetchMessagesCallback {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onCallback(messages: java.util.ArrayList<Message>) {
                     val sortedList = messages.sortedBy { it.timestamp }.toCollection(
@@ -98,7 +100,10 @@ class Chat : CheckAvailability() {
                     progressDialogActivity.dismissProgressDialog()
                 }
             })
+            fetchIsTyping()
         }
+
+        Log.e(TAG, "Members: Sender: ${sender.uid} | Receiver: ${receiver.uid}")
     }
 
     private fun fetchMessages(roomId: String, fetchMessagesCallback: FetchMessagesCallback) {
@@ -184,6 +189,10 @@ class Chat : CheckAvailability() {
         fun onCallback(configs: Configuration)
     }
 
+    interface FetchRoomCallback {
+        fun onCallback(r: Room)
+    }
+
     @SuppressLint("SetTextI18n")
     private fun setStatus() {
         val db = FirebaseFirestore.getInstance()
@@ -239,19 +248,39 @@ class Chat : CheckAvailability() {
             }
 
             if (!TextUtils.isEmpty(p0)) {
-                updateIsTyping(true)
+
+                if (auth.currentUser!!.uid == room.conversationStarterUid) updateStarterIsTyping(true)
+                else updateNonStarterIsTyping(true)
+
             } else {
-                updateIsTyping(false)
+                setStatus()
+                if (auth.currentUser!!.uid == room.conversationStarterUid) updateStarterIsTyping(false)
+                else updateNonStarterIsTyping(false)
             }
         }
 
         override fun afterTextChanged(p0: Editable?) {}
     }
 
-    private fun updateIsTyping(status: Boolean) {
+    private fun updateNonStarterIsTyping(status: Boolean) {
         db.collection("rooms").document(room.id)
             .update(
-                "isTyping", listOf(status, room.isTyping[1])
+                "isNonConversationStarterTyping", status
+            )
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot successfully written!")
+                return@addOnSuccessListener
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error writing document", e)
+                return@addOnFailureListener
+            }
+    }
+
+    private fun updateStarterIsTyping(status: Boolean) {
+        db.collection("rooms").document(room.id)
+            .update(
+                "isConversationStarterTyping", status
             )
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written!")
@@ -274,6 +303,11 @@ class Chat : CheckAvailability() {
         )
         messageRef.set(msg)
             .addOnSuccessListener {
+
+                if (room.lastMessage == "") {
+                    updateConversationStarter(sender.uid)
+                }
+
                 updateLastMessage(message)
                 Log.d(TAG, "DocumentSnapshot successfully created!")
             }
@@ -284,6 +318,21 @@ class Chat : CheckAvailability() {
                     "Message send failed: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+                return@addOnFailureListener
+            }
+    }
+
+    private fun updateConversationStarter(uid: String) {
+        db.collection("rooms").document(room.id)
+            .update(
+                "conversationStarterUid", uid
+            )
+            .addOnSuccessListener {
+                Log.d(TAG, "DocumentSnapshot successfully written!")
+                updateLastModifiedTime()
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -332,12 +381,28 @@ class Chat : CheckAvailability() {
                         val tempSender = tempRoom!!.members[0]
                         val tempReceiver = tempRoom.members[1]
 
-                        if (tempReceiver == receiver.uid) {
-                            listenForRoomChanges(tempRoom.id)
-                            Log.d(TAG, "Room exists: true, Id: ${tempRoom.id}")
-                            return@addOnSuccessListener
-                        } else if (tempSender == receiver.uid) {
-                            listenForRoomChanges(tempRoom.id)
+                        if (tempReceiver == receiver.uid || tempSender == receiver.uid) {
+                            fetchRoom(tempRoom.id, object : FetchRoomCallback {
+                                override fun onCallback(r: Room) {
+                                    room = r
+                                    fetchIsTyping()
+
+                                    fetchMessages(r.id, object : FetchMessagesCallback {
+                                        @SuppressLint("NotifyDataSetChanged")
+                                        override fun onCallback(messages: java.util.ArrayList<Message>) {
+                                            val sortedList =
+                                                messages.sortedBy { it.timestamp }.toCollection(
+                                                    java.util.ArrayList()
+                                                )
+                                            messagesArrayList.addAll(sortedList)
+                                            chatAdapter.notifyDataSetChanged()
+                                            recyclerView.scrollToPosition(messagesArrayList.size - 1)
+                                            progressDialogActivity.dismissProgressDialog()
+                                        }
+                                    })
+                                }
+                            })
+
                             Log.d(TAG, "Room exists: true, Id: ${tempRoom.id}")
                             return@addOnSuccessListener
                         } else {
@@ -357,8 +422,24 @@ class Chat : CheckAvailability() {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun listenForRoomChanges(id: String) {
+    private fun fetchRoom(id: String, fetchRoomCallback: FetchRoomCallback) {
         val docRef = db.collection("rooms").document(id)
+        docRef.get()
+            .addOnSuccessListener { documentSnapshot ->
+                val room = documentSnapshot.toObject<Room>()!!
+                fetchRoomCallback.onCallback(room)
+            }
+            .addOnFailureListener {
+                Log.d(TAG, "Failed: ${it.message}")
+                Toast.makeText(applicationContext, it.message, Toast.LENGTH_SHORT)
+                    .show()
+                return@addOnFailureListener
+            }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun fetchIsTyping() {
+        val docRef = db.collection("rooms").document(room.id)
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e)
@@ -366,24 +447,12 @@ class Chat : CheckAvailability() {
             }
 
             if (snapshot != null && snapshot.exists()) {
-                room = snapshot.toObject<Room>()!!
-
-                if (room.isTyping[1]) status.text = "Typing"
-
-                fetchMessages(room.id, object: FetchMessagesCallback {
-                    @SuppressLint("NotifyDataSetChanged")
-                    override fun onCallback(messages: java.util.ArrayList<Message>) {
-                        val sortedList = messages.sortedBy { it.timestamp }.toCollection(
-                            java.util.ArrayList()
-                        )
-                        messagesArrayList.addAll(sortedList)
-                        chatAdapter.notifyDataSetChanged()
-                        recyclerView.scrollToPosition(messagesArrayList.size - 1)
-                        progressDialogActivity.dismissProgressDialog()
-                    }
-                })
-
-                Log.d(TAG, "Current data: ${snapshot.data}")
+                val r = snapshot.toObject<Room>()!!
+                if (r.conversationStarterUid == auth.currentUser!!.uid) {
+                    if (r.isNonConversationStarterTyping) status.text = "Typing"
+                } else {
+                    if (r.isConversationStarterTyping) status.text = "Typing"
+                }
             } else {
                 Log.d(TAG, "Current data: null")
             }
@@ -395,9 +464,11 @@ class Chat : CheckAvailability() {
         room = Room(
             roomRef.id,
             listOf(sender.uid, receiver.uid),
-            listOf(false, false),
-            null,
-            ""
+            isConversationStarterTyping = false,
+            isNonConversationStarterTyping = false,
+            lastUpdatedTimestamp = null,
+            lastMessage = "",
+            conversationStarterUid = ""
         )
         roomRef.set(room)
             .addOnSuccessListener {

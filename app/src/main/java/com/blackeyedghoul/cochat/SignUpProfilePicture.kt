@@ -11,9 +11,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlin.properties.Delegates
 
 class SignUpProfilePicture : AppCompatActivity() {
@@ -55,6 +57,7 @@ class SignUpProfilePicture : AppCompatActivity() {
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var auth: FirebaseAuth
     private var alertDialog: AlertDialog? = null
+    private lateinit var back: ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +81,10 @@ class SignUpProfilePicture : AppCompatActivity() {
                 proceed.isClickable = false
                 proceed.isFocusable = false
             }
+        }
+
+        back.setOnClickListener{
+            onBackPressed()
         }
 
         profilePicture01.setOnClickListener{
@@ -409,29 +416,71 @@ class SignUpProfilePicture : AppCompatActivity() {
         val name = intent.getStringExtra("NAME")
 
         val db = FirebaseFirestore.getInstance()
-        val user = hashMapOf(
-            "username" to name.toString(),
-            "profilePicture" to selectedImage,
-            "joinedDate" to Timestamp.now(),
-            "phoneNumber" to currentUser!!.phoneNumber,
-            "bio" to "Hi \uD83D\uDC4B\uD83C\uDFFC I am using CoChat.",
-            "uid" to currentUser.uid,
-            "isOnline" to false
+
+        val configuration = hashMapOf(
+            "chatBackground" to "01",
+            "isPushNotificationEnabled" to true
         )
 
-        db.collection("users").document(currentUser.uid)
-            .set(user)
+        db.collection("settings").document(currentUser!!.uid)
+            .set(configuration)
             .addOnSuccessListener {
                 Log.d(TAG, "DocumentSnapshot successfully written!")
-                progressDialogActivity.dismissProgressDialog()
-                val intent = Intent(applicationContext, Home::class.java)
-                startActivity(intent)
             }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error writing document", e)
-                progressDialogActivity.dismissProgressDialog()
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_LONG).show()
             }
+
+        getFcmToken(object: FetchFcmTokenCallback {
+            override fun onCallback(token: String) {
+
+                val user = hashMapOf(
+                    "username" to name.toString(),
+                    "profilePicture" to selectedImage,
+                    "joinedDate" to Timestamp.now(),
+                    "phoneNumber" to currentUser.phoneNumber,
+                    "bio" to "Hi \uD83D\uDC4B\uD83C\uDFFC I am using CoChat.",
+                    "uid" to currentUser.uid,
+                    "isOnline" to false,
+                    "rooms" to listOf<String>(),
+                    "fcmToken" to token
+                )
+
+                db.collection("users").document(currentUser.uid)
+                    .set(user)
+                    .addOnSuccessListener {
+                        Log.d(TAG, "DocumentSnapshot successfully written!")
+                        progressDialogActivity.dismissProgressDialog()
+                        val intent = Intent(applicationContext, Home::class.java)
+                        startActivity(intent)
+                    }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error writing document", e)
+                        progressDialogActivity.dismissProgressDialog()
+                        Toast.makeText(applicationContext, e.message, Toast.LENGTH_LONG).show()
+                    }
+            }
+        })
+    }
+
+    private fun getFcmToken(fetchFcmTokenCallback: FetchFcmTokenCallback){
+        var token: String?
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            token = task.result
+            Log.d(TAG, "Token: $token")
+            fetchFcmTokenCallback.onCallback(token!!)
+        })
+    }
+
+    interface FetchFcmTokenCallback {
+        fun onCallback(token: String)
     }
 
     private fun checkNetworkConnection() {
@@ -494,5 +543,6 @@ class SignUpProfilePicture : AppCompatActivity() {
         editProfilePicture16 = findViewById(R.id.sp_selected_pp_16)
         proceed = findViewById(R.id.sp_proceed)
         progressDialogActivity = WelcomeScreen()
+        back = findViewById(R.id.sp_back)
     }
 }

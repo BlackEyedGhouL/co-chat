@@ -263,6 +263,7 @@ class Contacts : CheckAvailability() {
                         val contact = Contact(name!!, number)
 
                         if (user.phoneNumber == contact.phoneNumber || convertPhoneNumber(user.phoneNumber) == contact.phoneNumber) {
+                            Log.e(TAG, "UserExists: ${contact.name}")
                             contactList.remove(contact)
                         }
                     }
@@ -286,30 +287,14 @@ class Contacts : CheckAvailability() {
                 }
 
                 for (doc: DocumentChange in value?.documentChanges!!) {
-                    if (doc.type == DocumentChange.Type.ADDED) {
+                    if (doc.type == DocumentChange.Type.ADDED || doc.type == DocumentChange.Type.MODIFIED) {
                         val user: User = doc.document.toObject(User::class.java)
                         val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
-                        val method1: Boolean = contactExists(this, tempPhoneNumber)
-                        val method2: Boolean = contactExists(this, user.phoneNumber)
-                        if (method1 || method2) {
-                            var name: String = user.username
-                            if (method1) {
-                                name = getContactName(this, tempPhoneNumber)!!
-                            } else if (method2) {
-                                name = getContactName(this, user.phoneNumber)!!
-                            } else if (method1 && method2) {
-                                name = getContactName(this, tempPhoneNumber)!!
-                            }
-                            user.username = name
+                        val method1: Boolean = contactExists(this, tempPhoneNumber) // 0
+                        val method2: Boolean = contactExists(this, user.phoneNumber) // +94
 
-                            if (currentUser!!.phoneNumber != user.phoneNumber && currentUser.phoneNumber != tempPhoneNumber)
-                                usersArrayList.add(user)
-                        }
-                    } else if (doc.type == DocumentChange.Type.MODIFIED) {
-                        val user: User = doc.document.toObject(User::class.java)
-                        val tempPhoneNumber = convertPhoneNumber(user.phoneNumber)
-                        val method1: Boolean = contactExists(this, tempPhoneNumber)
-                        val method2: Boolean = contactExists(this, user.phoneNumber)
+                        Log.e(TAG, "FetchUsers: $method1 - ${user.phoneNumber} | $method2 - $tempPhoneNumber")
+
                         if (method1 || method2) {
                             var name: String = user.username
                             if (method1) {
