@@ -58,7 +58,7 @@ class ChangeBioSheet(private val previousBio: String): BottomSheetDialogFragment
                 dismiss()
             }
             .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error writing document", e)
+                Log.d(ContentValues.TAG, "Error writing document", e)
                 dismiss()
             }
     }

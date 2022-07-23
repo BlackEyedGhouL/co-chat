@@ -428,7 +428,7 @@ class SignUpProfilePicture : AppCompatActivity() {
                 Log.d(TAG, "DocumentSnapshot successfully written!")
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_LONG).show()
             }
 
@@ -456,7 +456,7 @@ class SignUpProfilePicture : AppCompatActivity() {
                         startActivity(intent)
                     }
                     .addOnFailureListener { e ->
-                        Log.w(TAG, "Error writing document", e)
+                        Log.d(TAG, "Error writing document", e)
                         progressDialogActivity.dismissProgressDialog()
                         Toast.makeText(applicationContext, e.message, Toast.LENGTH_LONG).show()
                     }
@@ -468,7 +468,7 @@ class SignUpProfilePicture : AppCompatActivity() {
         var token: String?
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                Log.d(TAG, "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
 

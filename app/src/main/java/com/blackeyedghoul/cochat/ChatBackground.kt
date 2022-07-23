@@ -259,7 +259,7 @@ class ChatBackground : CheckAvailability() {
             .addOnFailureListener { e ->
                 progressDialogActivity.dismissProgressDialog()
                 Toast.makeText(this, "Background set failed!", Toast.LENGTH_SHORT).show()
-                Log.w(ContentValues.TAG, "Error writing document", e)
+                Log.d(ContentValues.TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }

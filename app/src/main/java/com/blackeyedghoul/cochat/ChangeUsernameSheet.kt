@@ -58,7 +58,7 @@ class ChangeUsernameSheet(private val previousName: String): BottomSheetDialogFr
                 dismiss()
             }
             .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error writing document", e)
+                Log.d(ContentValues.TAG, "Error writing document", e)
                 dismiss()
             }
     }

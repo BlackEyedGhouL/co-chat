@@ -78,7 +78,7 @@ class Profile : CheckAvailability() {
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 progressDialogActivity.dismissProgressDialog()
-                Log.w(TAG, "Listen failed.", e)
+                Log.d(TAG, "Listen failed.", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }

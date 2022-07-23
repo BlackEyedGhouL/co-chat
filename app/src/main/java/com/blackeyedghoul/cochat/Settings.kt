@@ -84,7 +84,7 @@ class Settings : CheckAvailability() {
                 finishAffinity()
             }
             .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error writing document", e)
+                Log.d(ContentValues.TAG, "Error writing document", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }
@@ -100,7 +100,7 @@ class Settings : CheckAvailability() {
                 return@addOnSuccessListener
             }
             .addOnFailureListener { e ->
-                Log.w(ContentValues.TAG, "Error writing document", e)
+                Log.d(ContentValues.TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -111,7 +111,7 @@ class Settings : CheckAvailability() {
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 progressDialogActivity.dismissProgressDialog()
-                Log.w(ContentValues.TAG, "Listen failed.", e)
+                Log.d(ContentValues.TAG, "Listen failed.", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }

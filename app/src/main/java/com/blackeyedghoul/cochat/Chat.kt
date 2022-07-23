@@ -108,7 +108,7 @@ class Chat : CheckAvailability() {
             fetchIsTyping()
         }
 
-        Log.e(TAG, "Members: Sender: ${sender.uid} | Receiver: ${receiver.uid}")
+        Log.d(TAG, "Members: Sender: ${sender.uid} | Receiver: ${receiver.uid}")
     }
 
     private fun fetchMessages(roomId: String, fetchMessagesCallback: FetchMessagesCallback) {
@@ -142,7 +142,7 @@ class Chat : CheckAvailability() {
 
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
+                Log.d(TAG, "Listen failed.", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
@@ -285,7 +285,7 @@ class Chat : CheckAvailability() {
                 return@addOnSuccessListener
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -300,7 +300,7 @@ class Chat : CheckAvailability() {
                 return@addOnSuccessListener
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -324,7 +324,7 @@ class Chat : CheckAvailability() {
                 Log.d(TAG, "DocumentSnapshot successfully created!")
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error creating document", e)
+                Log.d(TAG, "Error creating document", e)
                 Toast.makeText(
                     applicationContext,
                     "Message send failed: ${e.message}",
@@ -341,10 +341,10 @@ class Chat : CheckAvailability() {
             if (response.isSuccessful) {
                 Log.d("TAG", "Response: ${Gson().toJson(response)}")
             } else {
-                Log.e("TAG", response.errorBody()!!.string())
+                Log.d("TAG", response.errorBody()!!.string())
             }
         } catch (e: Exception) {
-            Log.e("TAG", e.toString())
+            Log.d("TAG", e.toString())
         }
     }
 
@@ -358,7 +358,7 @@ class Chat : CheckAvailability() {
                 updateLastModifiedTime()
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -373,7 +373,7 @@ class Chat : CheckAvailability() {
                 updateLastModifiedTime()
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -388,7 +388,7 @@ class Chat : CheckAvailability() {
                 return@addOnSuccessListener
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 return@addOnFailureListener
             }
     }
@@ -468,7 +468,7 @@ class Chat : CheckAvailability() {
         val docRef = db.collection("rooms").document(room.id)
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
+                Log.d(TAG, "Listen failed.", e)
                 return@addSnapshotListener
             }
 
@@ -503,7 +503,7 @@ class Chat : CheckAvailability() {
                 addRoomToUsers(roomRef.id, sender)
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error creating document", e)
+                Log.d(TAG, "Error creating document", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }
@@ -526,7 +526,7 @@ class Chat : CheckAvailability() {
                 return@addOnSuccessListener
             }
             .addOnFailureListener { e ->
-                Log.w(TAG, "Error writing document", e)
+                Log.d(TAG, "Error writing document", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addOnFailureListener
             }

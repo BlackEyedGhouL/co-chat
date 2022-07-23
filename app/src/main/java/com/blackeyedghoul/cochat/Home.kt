@@ -140,7 +140,7 @@ class Home : CheckAvailability(), LifecycleObserver {
 
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
+                Log.d(TAG, "Listen failed.", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }
@@ -215,7 +215,7 @@ class Home : CheckAvailability(), LifecycleObserver {
                                     }
                                 }
 
-                                Log.e(TAG, "Conversations: ${conversationsArrayList.size}")
+                                Log.d(TAG, "Conversations: ${conversationsArrayList.size}")
                                 val sortedList = conversationsArrayList.sortedBy { it.room.lastUpdatedTimestamp }.toCollection(ArrayList())
                                 searchConversationsArrayList.addAll(sortedList)
                                 backupConversationsArrayList.addAll(sortedList)
@@ -290,7 +290,7 @@ class Home : CheckAvailability(), LifecycleObserver {
         val docRef = db.collection("users").document(auth.currentUser!!.uid)
         docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
+                Log.d(TAG, "Listen failed.", e)
                 Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
                 return@addSnapshotListener
             }

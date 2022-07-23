@@ -117,7 +117,7 @@ class Contacts : CheckAvailability() {
                     .getDeclaredMethod("setForceShowIcon", Boolean::class.java)
                     .invoke(mPopup, true)
             } catch (e: Exception) {
-                Log.e(TAG, "Ended with exception: ", e)
+                Log.d(TAG, "Ended with exception: ", e)
             } finally {
                 popupMenu.show()
             }
@@ -263,7 +263,7 @@ class Contacts : CheckAvailability() {
                         val contact = Contact(name!!, number)
 
                         if (user.phoneNumber == contact.phoneNumber || convertPhoneNumber(user.phoneNumber) == contact.phoneNumber) {
-                            Log.e(TAG, "UserExists: ${contact.name}")
+                            Log.d(TAG, "UserExists: ${contact.name}")
                             contactList.remove(contact)
                         }
                     }
@@ -293,7 +293,7 @@ class Contacts : CheckAvailability() {
                         val method1: Boolean = contactExists(this, tempPhoneNumber) // 0
                         val method2: Boolean = contactExists(this, user.phoneNumber) // +94
 
-                        Log.e(TAG, "FetchUsers: $method1 - ${user.phoneNumber} | $method2 - $tempPhoneNumber")
+                        Log.d(TAG, "FetchUsers: $method1 - ${user.phoneNumber} | $method2 - $tempPhoneNumber")
 
                         if (method1 || method2) {
                             var name: String = user.username
