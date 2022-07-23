@@ -16,16 +16,18 @@ import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.ChatAdapter
-import com.blackeyedghoul.cochat.models.Configuration
-import com.blackeyedghoul.cochat.models.Message
-import com.blackeyedghoul.cochat.models.Room
-import com.blackeyedghoul.cochat.models.User
+import com.blackeyedghoul.cochat.models.*
+import com.blackeyedghoul.cochat.utilities.RetrofitInstance
 import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class Chat : CheckAvailability() {
@@ -41,6 +43,7 @@ class Chat : CheckAvailability() {
     private lateinit var receiver: User
     private lateinit var sender: User
     private lateinit var room: Room
+    private lateinit var configurations: Configuration
     private lateinit var roomId: String
     private lateinit var profilePicture: ImageView
     private val db = FirebaseFirestore.getInstance()
@@ -48,6 +51,7 @@ class Chat : CheckAvailability() {
     private lateinit var chatBackground: ImageView
     private lateinit var chatAdapter: ChatAdapter
     private lateinit var messagesArrayList: ArrayList<Message>
+    private var topic = ""
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,6 +75,7 @@ class Chat : CheckAvailability() {
 
         setChatBackground(object : FetchConfigurationCallback {
             override fun onCallback(configs: Configuration) {
+                configurations = configs
                 chatAdapter = if (configs.chatBackground == "01")
                     ChatAdapter(messagesArrayList, sender, true)
                 else
@@ -235,6 +240,14 @@ class Chat : CheckAvailability() {
                 send.setOnClickListener {
                     if (room.id != "") {
                         sendMessage(message)
+
+                        if (configurations.isPushNotificationEnabled) {
+                            topic = "/topics/${receiver.uid}"
+                            PushNotification(NotificationData(receiver.username, message), topic).also {
+                                sendNotification(it)
+                            }
+                        }
+
                     } else {
                         Toast.makeText(applicationContext, "Room doesn't exist", Toast.LENGTH_SHORT)
                             .show()
@@ -303,7 +316,6 @@ class Chat : CheckAvailability() {
         )
         messageRef.set(msg)
             .addOnSuccessListener {
-
                 if (room.lastMessage == "") {
                     updateConversationStarter(sender.uid)
                 }
@@ -320,6 +332,20 @@ class Chat : CheckAvailability() {
                 ).show()
                 return@addOnFailureListener
             }
+    }
+
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if (response.isSuccessful) {
+                Log.d("TAG", "Response: ${Gson().toJson(response)}")
+            } else {
+                Log.e("TAG", response.errorBody()!!.string())
+            }
+        } catch (e: Exception) {
+            Log.e("TAG", e.toString())
+        }
     }
 
     private fun updateConversationStarter(uid: String) {

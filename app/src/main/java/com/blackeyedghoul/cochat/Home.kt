@@ -3,6 +3,7 @@ package com.blackeyedghoul.cochat
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -16,13 +17,16 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import com.blackeyedghoul.cochat.adapters.MessagesAdapter
+import com.blackeyedghoul.cochat.models.Configuration
 import com.blackeyedghoul.cochat.models.Conversation
 import com.blackeyedghoul.cochat.models.Room
 import com.blackeyedghoul.cochat.models.User
+import com.blackeyedghoul.cochat.services.FirebaseService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.messaging.FirebaseMessaging
 import java.util.*
 
 
@@ -59,6 +63,17 @@ class Home : CheckAvailability(), LifecycleObserver {
 
         messagesAdapter = MessagesAdapter(searchConversationsArrayList, this@Home)
         messagesRecyclerView.adapter = messagesAdapter
+
+        fetchConfigurations(object: FetchConfigurationCallback{
+            override fun onCallback(configs: Configuration) {
+
+                if (configs.isPushNotificationEnabled) {
+                    FirebaseService.sharedPref = getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+                    FirebaseService.token = FirebaseMessaging.getInstance().token.toString()
+                    FirebaseMessaging.getInstance().subscribeToTopic("/topics/${auth.currentUser!!.uid}")
+                }
+            }
+        })
 
         contacts.setOnClickListener {
             if (checkContactsPermission()) {
@@ -120,6 +135,32 @@ class Home : CheckAvailability(), LifecycleObserver {
         })
     }
 
+    private fun fetchConfigurations(fetchConfigurationCallback: FetchConfigurationCallback) {
+        val docRef = db.collection("settings").document(auth.currentUser!!.uid)
+
+        docRef.addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.w(TAG, "Listen failed.", e)
+                Toast.makeText(applicationContext, e.message, Toast.LENGTH_SHORT).show()
+                return@addSnapshotListener
+            }
+
+            val configuration: Configuration
+
+            if (snapshot != null && snapshot.exists()) {
+                configuration = snapshot.toObject<Configuration>()!!
+                fetchConfigurationCallback.onCallback(configuration)
+
+            } else {
+                Log.d(TAG, "Current data: null")
+            }
+        }
+    }
+
+    interface FetchConfigurationCallback {
+        fun onCallback(configs: Configuration)
+    }
+
     override fun onStart() {
         super.onStart()
         searchConversationsArrayList.clear()
@@ -140,7 +181,7 @@ class Home : CheckAvailability(), LifecycleObserver {
                 fetchSender(object: FetchSenderCallback {
                     @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
                     override fun onCallback(user: User) {
-                        val firstName = getFirstWord(sender.username)
+                        val firstName = getFirstWord(sender.username).trim()
                         greeting.text = "Hello $firstName,"
                         setProfilePicture(sender.profilePicture)
                     }
