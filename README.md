@@ -7,7 +7,7 @@
 ## Download
 You can Install the latest version of CoChat android app from below 👇
 
-[![Download](https://img.shields.io/github/v/release/BlackEyedGhouL/co-chat?color=407BFF&label=Download&logo=android&style=for-the-badge)](https://github.com/BlackEyedGhouL/co-chat/releases/download/v0.1.0/CoChat_v0.1.0.apk)
+[![Download](https://img.shields.io/github/v/release/blackeyedghoul/co-chat?color=407BFF&label=Download&logo=android&style=for-the-badge)](https://github.com/BlackEyedGhouL/co-chat/releases/download/v0.1.0/CoChat_v0.1.0.apk)
 
 ## Preview
 
