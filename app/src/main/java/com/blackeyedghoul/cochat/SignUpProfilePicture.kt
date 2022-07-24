@@ -419,7 +419,7 @@ class SignUpProfilePicture : AppCompatActivity() {
 
         val configuration = hashMapOf(
             "chatBackground" to "01",
-            "isPushNotificationEnabled" to true
+            "isPushNotificationEnabled" to false
         )
 
         db.collection("settings").document(currentUser!!.uid)

@@ -209,9 +209,6 @@ class Home : CheckAvailability(), LifecycleObserver {
                                                     if (contactsActivity.contactExists(this@Home, receiver.phoneNumber) || contactsActivity.contactExists(this@Home, contactsActivity.convertPhoneNumber(receiver.phoneNumber))) {
                                                         receiver.username = contactsActivity.getContactName(this@Home, receiver.phoneNumber)!!
                                                     }
-                                                } else {
-                                                    Toast.makeText(applicationContext, "Required permission denied", Toast.LENGTH_SHORT).show()
-                                                    requestContactsPermission()
                                                 }
 
                                                 conversationsArrayList.removeIf { it.room.id == room.id }

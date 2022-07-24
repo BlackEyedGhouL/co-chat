@@ -242,8 +242,8 @@ class Chat : CheckAvailability() {
                         sendMessage(message)
 
                         if (configurations.isPushNotificationEnabled) {
-                            topic = "/topics/${receiver.uid}"
-                            PushNotification(NotificationData(receiver.username, message), topic).also {
+                            topic = "/topics/${sender.uid}"
+                            PushNotification(NotificationData(sender.username, message), topic).also {
                                 sendNotification(it)
                             }
                         }
