@@ -349,7 +349,7 @@ class Contacts : CheckAvailability() {
     }
 
     @SuppressLint("Range", "Recycle")
-    private fun contactExists(context: Context, number: String?): Boolean {
+    fun contactExists(context: Context, number: String?): Boolean {
         return if (number != null) {
             val cr: ContentResolver = context.contentResolver
             val curContacts: Cursor? =
@@ -369,7 +369,7 @@ class Contacts : CheckAvailability() {
         }
     }
 
-    private fun convertPhoneNumber(phoneNumber: String): String {
+    fun convertPhoneNumber(phoneNumber: String): String {
         return "0".plus(phoneNumber.substring(3, phoneNumber.lastIndex + 1))
     }
 
