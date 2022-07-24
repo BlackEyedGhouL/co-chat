@@ -39,9 +39,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="20dp"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        android:layout_margin="20dp"
         app:layout_constraintBottom_toTopOf="@+id/sp_proceed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,22 +50,25 @@
 
         <GridLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:useDefaultMargins="true"
             android:layout_gravity="center_horizontal"
             android:alignmentMode="alignMargins"
             android:columnCount="2"
             android:rowCount="2">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_1"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_1"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -100,14 +103,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_2"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_2"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -142,15 +147,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_3"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_3"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -185,14 +192,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_4"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_4"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -227,15 +236,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_5"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_5"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -270,14 +281,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_6"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_6"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -312,15 +325,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_7"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_7"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -355,14 +370,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_8"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_8"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -397,15 +414,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_9"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_9"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -440,14 +459,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_10"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_10"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -482,15 +503,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_11"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_11"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -525,14 +548,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_12"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_12"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -567,15 +592,17 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_13"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_13"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -610,14 +637,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginBottom="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_14"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_14"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -652,14 +681,16 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_marginEnd="15dp">
 
                 <ImageView
                     android:id="@+id/sp_pp_15"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_15"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -694,13 +725,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1">
 
                 <ImageView
                     android:id="@+id/sp_pp_16"
-                    android:layout_width="130dp"
-                    android:layout_height="130dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/pp_16"
                     app:layout_constraintBottom_toBottomOf="parent"
