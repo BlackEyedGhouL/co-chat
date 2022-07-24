@@ -1,6 +1,7 @@
 package com.blackeyedghoul.cochat
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -9,13 +10,15 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.viewpager2.widget.ViewPager2
 import com.blackeyedghoul.cochat.adapters.ViewPagerAdapter
-import com.goodiebag.pinview.Pinview
+import com.chaos.view.PinView
 import com.google.firebase.FirebaseException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
@@ -33,7 +36,7 @@ class VerifyOtp : AppCompatActivity() {
     private lateinit var resend: TextView
     private var isOnVerificationCompleted: Boolean = false
     private lateinit var verificationId: String
-    private lateinit var pinView: Pinview
+    private lateinit var pinView: PinView
     private lateinit var credentials: PhoneAuthCredential
     private lateinit var progressDialogActivity: WelcomeScreen
     private lateinit var resendToken: PhoneAuthProvider.ForceResendingToken
@@ -58,7 +61,7 @@ class VerifyOtp : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 sliderHandler.removeCallbacks(sliderRunnable)
-                sliderHandler.postDelayed(sliderRunnable, 1500)
+                sliderHandler.postDelayed(sliderRunnable, 4000)
             }
         })
 
@@ -88,11 +91,19 @@ class VerifyOtp : AppCompatActivity() {
             resendToken = intent.getParcelableExtra("RESEND_TOKEN")!!
         }
 
-        pinView.setPinViewEventListener{ pinView, _ ->
-            val credential : PhoneAuthCredential = PhoneAuthProvider.getCredential(
-                verificationId, pinView.value)
-            progressDialogActivity.showProgressDialog(this)
-            signInWithPhoneAuthCredential(credential)
+        pinView.setAnimationEnable(true)
+        pinView.requestFocus()
+
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
+        pinView.addTextChangedListener { pin ->
+            if (pin.toString().length == 6) {
+                val credential : PhoneAuthCredential = PhoneAuthProvider.getCredential(
+                    verificationId, pin.toString())
+                progressDialogActivity.showProgressDialog(this)
+                signInWithPhoneAuthCredential(credential)
+            }
         }
 
         callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
@@ -204,7 +215,7 @@ class VerifyOtp : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        sliderHandler.postDelayed(sliderRunnable, 1500)
+        sliderHandler.postDelayed(sliderRunnable, 4000)
     }
 
     private fun init() {

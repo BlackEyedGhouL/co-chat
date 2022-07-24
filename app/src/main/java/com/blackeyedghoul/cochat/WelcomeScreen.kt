@@ -59,7 +59,7 @@ class WelcomeScreen : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 sliderHandler.removeCallbacks(sliderRunnable)
-                sliderHandler.postDelayed(sliderRunnable, 3000)
+                sliderHandler.postDelayed(sliderRunnable, 4000)
             }
         })
 
@@ -204,7 +204,7 @@ class WelcomeScreen : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        sliderHandler.postDelayed(sliderRunnable, 3000)
+        sliderHandler.postDelayed(sliderRunnable, 4000)
     }
 
     private fun init() {
